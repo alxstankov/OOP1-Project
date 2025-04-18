@@ -37,10 +37,15 @@ public class GameboardGenerator {
         }
         gameboard[length - 1][width - 2] = '.';
 
-        int dragonCellIndex = specialCellSelector.nextInt(result.size()-1);
+        int numEndCells = ((result.size()-1)-(result.size()-1)/2);
+        int dragonCellIndex = specialCellSelector.nextInt(numEndCells);
         Cell dragonCell = result.get(dragonCellIndex);
         gameboard[dragonCell.getCordX()][dragonCell.getCordY()] = 'M';
 
+        visitedCells.remove(dragonCell);
+        int treasureCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
+        Cell treasureCell = (Cell) visitedCells.toArray()[treasureCellIndex];
+        gameboard[treasureCell.getCordX()][treasureCell.getCordY()] = 'T';
     }
 
     private void generatePaths(Cell startCell)

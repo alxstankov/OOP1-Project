@@ -2,7 +2,7 @@ import gameboard.GameboardGenerator;
 
 public class Application {
     public static void main(String[] args) {
-        GameboardGenerator gameboardGenerator = new GameboardGenerator(25,20);
+        GameboardGenerator gameboardGenerator = new GameboardGenerator(15,10);
         gameboardGenerator.generateBoard();
         System.out.println(gameboardGenerator.toString());
     }
