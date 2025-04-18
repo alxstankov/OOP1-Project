@@ -5,37 +5,32 @@ import java.util.*;
 public class GameboardGenerator {
     private int length;
     private int width;
-    private List<Cell> result;
-    private Set<Cell> visitedCells = new HashSet<>();
     private char[][] gameboard;
-    private Random specialCellSelector = new Random();
 
-    public GameboardGenerator(int length, int width)
-    {
-        this.length = length;
-        this.width = width;
-        this.gameboard = new char[length+1][width+1];
-    }
 
-    public void generateBoard()
+    public char[][] generateBoard(int length, int width)
     {
-        result = new ArrayList<>();
-        for (int i=0; i<length;i++)
-        {
-            for (int j=0;j<width;j++)
-            {
-                    gameboard[i][j] ='#';
-            }
-        }
-        generatePaths(new Cell(1,1));
+        setLength(length);
+        setWidth(width);
+
+        this.gameboard = new char[this.length+1][this.width+1];
+
+        fillCells();
+
+        List<Cell> result = new ArrayList<>();
+        Set<Cell> visitedCells = new HashSet<>();
+
+        generatePaths(new Cell(1,1),result,visitedCells);
 
         gameboard[0][1] = '.';
 
-        if (gameboard[length-2][width-2] == '#')
+        if (gameboard[this.length-2][this.width-2] == '#')
         {
-            gameboard[length - 2][width - 2] = '.';
+            gameboard[this.length-2][this.width-2] = '.';
         }
-        gameboard[length - 1][width - 2] = '.';
+        gameboard[this.length - 1][this.width - 2] = '.';
+
+        Random specialCellSelector = new Random();
 
         int numEndCells = ((result.size()-1)-(result.size()-1)/2);
         int dragonCellIndex = specialCellSelector.nextInt(numEndCells);
@@ -46,9 +41,30 @@ public class GameboardGenerator {
         int treasureCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
         Cell treasureCell = (Cell) visitedCells.toArray()[treasureCellIndex];
         gameboard[treasureCell.getCordX()][treasureCell.getCordY()] = 'T';
+
+        return gameboard;
     }
 
-    private void generatePaths(Cell startCell)
+    private void fillCells()
+    {
+        for (int i=0; i<length;i++)
+        {
+            for (int j=0;j<width;j++)
+            {
+                gameboard[i][j] ='#';
+            }
+        }
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    private void generatePaths(Cell startCell,List<Cell> result, Set<Cell> visitedCells)
     {
         gameboard[startCell.getCordX()][startCell.getCordY()] = '.';
         visitedCells.add(startCell);
@@ -60,7 +76,7 @@ public class GameboardGenerator {
         Collections.shuffle(neighbours);
         for (Cell neighbour : neighbours) {
             if (!visitedCells.contains(neighbour) && countPathNeighbours(neighbour.getCordX(),neighbour.getCordY())<=1) {
-                generatePaths(neighbour);
+                generatePaths(neighbour,result,visitedCells);
             }
         }
 
@@ -85,19 +101,5 @@ public class GameboardGenerator {
         if (y > 0 && gameboard[x][y - 1] == '.') count++;
         if (y < width - 1 && gameboard[x][y + 1] == '.') count++;
         return count;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (int i=0; i<length;i++)
-        {
-            for (int j=0;j<width;j++)
-            {
-                builder.append(gameboard[i][j]).append(" ");
-            }
-            builder.append("\n");
-        }
-        return builder.toString();
     }
 }

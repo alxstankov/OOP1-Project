@@ -20,6 +20,12 @@ public class Cell {
         return cordY;
     }
 
+    public void setCords(int x, int y)
+    {
+        cordX = x;
+        cordY = y;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Cell cell)) return false;

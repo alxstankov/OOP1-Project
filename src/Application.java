@@ -1,9 +1,12 @@
-import gameboard.GameboardGenerator;
+import game.GameProcessor;
 
 public class Application {
     public static void main(String[] args) {
-        GameboardGenerator gameboardGenerator = new GameboardGenerator(15,10);
-        gameboardGenerator.generateBoard();
-        System.out.println(gameboardGenerator.toString());
+        GameProcessor game = new GameProcessor(10,15);
+        try{
+            game.startGame();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
