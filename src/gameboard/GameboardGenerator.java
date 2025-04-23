@@ -7,7 +7,7 @@ public class GameboardGenerator {
     private int width;
     private char[][] gameboard;
 
-
+    // Implements level params.
     public char[][] generateBoard(int length, int width)
     {
         setLength(length);
@@ -35,12 +35,12 @@ public class GameboardGenerator {
         int numEndCells = ((result.size()-1)-(result.size()-1)/2);
         int dragonCellIndex = specialCellSelector.nextInt(numEndCells);
         Cell dragonCell = result.get(dragonCellIndex);
-        gameboard[dragonCell.getCordX()][dragonCell.getCordY()] = 'M';
+        gameboard[dragonCell.getCordY()][dragonCell.getCordX()] = 'M';
 
         visitedCells.remove(dragonCell);
         int treasureCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
         Cell treasureCell = (Cell) visitedCells.toArray()[treasureCellIndex];
-        gameboard[treasureCell.getCordX()][treasureCell.getCordY()] = 'T';
+        gameboard[treasureCell.getCordY()][treasureCell.getCordX()] = 'T';
 
         return gameboard;
     }
@@ -66,7 +66,7 @@ public class GameboardGenerator {
 
     private void generatePaths(Cell startCell,List<Cell> result, Set<Cell> visitedCells)
     {
-        gameboard[startCell.getCordX()][startCell.getCordY()] = '.';
+        gameboard[startCell.getCordY()][startCell.getCordX()] = '.';
         visitedCells.add(startCell);
         result.add(startCell);
 
@@ -88,18 +88,18 @@ public class GameboardGenerator {
 
         if (x - 1 > 0) neighbours.add(new Cell(x - 1, y));
         if (y - 1 > 0) neighbours.add(new Cell(x, y - 1));
-        if (x + 1 < length - 1) neighbours.add(new Cell(x + 1, y));
-        if (y + 1 < width - 1) neighbours.add(new Cell(x, y + 1));
+        if (x + 1 < width - 1) neighbours.add(new Cell(x + 1, y));
+        if (y + 1 < length - 1) neighbours.add(new Cell(x, y + 1));
         return neighbours;
 
     }
 
     private int countPathNeighbours(int x, int y) {
         int count = 0;
-        if (x > 0 && gameboard[x - 1][y] == '.') count++;
-        if (x < length - 1 && gameboard[x + 1][y] == '.') count++;
-        if (y > 0 && gameboard[x][y - 1] == '.') count++;
-        if (y < width - 1 && gameboard[x][y + 1] == '.') count++;
+        if (x > 0 && gameboard[y][x-1] == '.') count++;
+        if (x < width - 1 && gameboard[y][x+1] == '.') count++;
+        if (y > 0 && gameboard[y-1][x] == '.') count++;
+        if (y < length - 1 && gameboard[y+1][x] == '.') count++;
         return count;
     }
 }

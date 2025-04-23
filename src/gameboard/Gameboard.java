@@ -4,14 +4,14 @@ public class Gameboard {
     private char[][] board;
     private int length;
     private int width;
-    private Cell playerCords = new Cell(0,1);
+    private Cell playerCords = new Cell(1,0);
 
     public Gameboard(char[][] board, int length, int width)
     {
         this.board = board;
         this.length = length;
         this.width = width;
-        this.board[playerCords.getCordX()][playerCords.getCordY()] = 'P';
+        this.board[playerCords.getCordY()][playerCords.getCordX()] = 'P';
     }
 
     public void movePlayer(int newCordX, int newCordY)
@@ -37,35 +37,35 @@ public class Gameboard {
             System.out.println("Treasure encounter");
         }
 
-        board[playerCords.getCordX()][playerCords.getCordY()] = '.';
-        board[newCordX][newCordY] = 'P';
+        board[playerCords.getCordY()][playerCords.getCordX()] = '.';
+        board[newCordY][newCordX] = 'P';
 
         playerCords.setCords(newCordX,newCordY);
     }
 
     private boolean isCellWall(int x, int y)
     {
-        return board[x][y] == '#';
+        return board[y][x] == '#';
     }
 
     private boolean isCordOutOfBounds(int x, int y)
     {
-        return x < 0 || y < 0 || x > length-1 || y > width-1;
+        return x < 0 || y < 0 || x > width-1 || y > length-1;
     }
 
     public boolean isMazeExit(int x, int y)
     {
-        return x == length-1 && y == width-2;
+        return x == width-2 && y == length-1;
     }
 
     private boolean isCellMonster(int x, int y)
     {
-        return board[x][y] == 'M';
+        return board[y][x] == 'M';
     }
 
     private boolean isCellTreasure(int x, int y)
     {
-        return board[x][y] == 'T';
+        return board[y][x] == 'T';
     }
 
     public Cell getPlayerCords()

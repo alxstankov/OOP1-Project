@@ -16,10 +16,10 @@ public class GameProcessor {
     private GameboardGenerator generator = new GameboardGenerator();
     private Map<String,Runnable> gameControls = new HashMap<>()
     {{
-        put("w",()->gameboard.movePlayer(playerLocation.getCordX()-1,playerLocation.getCordY()));
-        put("a",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
-        put("s",()->gameboard.movePlayer(playerLocation.getCordX()+1,playerLocation.getCordY()));
-        put("d",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()+1));
+        put("w",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
+        put("a",()->gameboard.movePlayer(playerLocation.getCordX()-1,playerLocation.getCordY()));
+        put("s",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()+1));
+        put("d",()->gameboard.movePlayer(playerLocation.getCordX()+1,playerLocation.getCordY()));
 
     }};
     private InputHandler inputHandler = new ConsoleInputHandler();
@@ -39,9 +39,16 @@ public class GameProcessor {
             System.out.print(">> ");
             gameInput = inputHandler.readContent();
             gameCommand = gameControls.get(gameInput.toLowerCase());
+            if(gameCommand==null)
+            {
+                System.out.println("No such input");
+                continue;
+            }
             gameCommand.run();
-            playerLocation = gameboard.getPlayerCords();
+
         }
         System.out.println(gameboard.toString());
     }
+
+    // Implement generate level.
 }
