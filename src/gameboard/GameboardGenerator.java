@@ -8,7 +8,7 @@ public class GameboardGenerator {
     private char[][] gameboard;
 
     // Implements level params.
-    public char[][] generateBoard(int length, int width)
+    public char[][] generateBoard(int length, int width, int monsters, int treasure)
     {
         setLength(length);
         setWidth(width);
@@ -32,16 +32,21 @@ public class GameboardGenerator {
 
         Random specialCellSelector = new Random();
 
-        int numEndCells = ((result.size()-1)-(result.size()-1)/2);
-        int dragonCellIndex = specialCellSelector.nextInt(numEndCells);
-        Cell dragonCell = result.get(dragonCellIndex);
-        gameboard[dragonCell.getCordY()][dragonCell.getCordX()] = 'M';
+        for (int i = 0; i < monsters; i++) {
+            int numEndCells = ((result.size() - 1) - (result.size() - 1) / 2);
+            int dragonCellIndex = specialCellSelector.nextInt(numEndCells);
+            Cell dragonCell = result.get(dragonCellIndex);
+            gameboard[dragonCell.getCordY()][dragonCell.getCordX()] = 'M';
+            visitedCells.remove(dragonCell);
+            result.remove(dragonCell);
+        }
 
-        visitedCells.remove(dragonCell);
-        int treasureCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
-        Cell treasureCell = (Cell) visitedCells.toArray()[treasureCellIndex];
-        gameboard[treasureCell.getCordY()][treasureCell.getCordX()] = 'T';
-
+        for (int i = 0; i < treasure; i++) {
+            int treasureCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
+            Cell treasureCell = (Cell) visitedCells.toArray()[treasureCellIndex];
+            gameboard[treasureCell.getCordY()][treasureCell.getCordX()] = 'T';
+            visitedCells.remove(treasureCell);
+        }
         return gameboard;
     }
 

@@ -20,17 +20,19 @@ public class GameProcessor {
         put("a",()->gameboard.movePlayer(playerLocation.getCordX()-1,playerLocation.getCordY()));
         put("s",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()+1));
         put("d",()->gameboard.movePlayer(playerLocation.getCordX()+1,playerLocation.getCordY()));
-
+        put("jump",()->gameboard.movePlayer(level.getWidth()-2,level.getLength()-1));
     }};
     private InputHandler inputHandler = new ConsoleInputHandler();
+    private LevelProcessor level = new LevelProcessor();
 
-    public GameProcessor(int length, int width)
+    public GameProcessor()
     {
-        this.gameboard = new Gameboard(generator.generateBoard(length,width),length,width);
+        this.gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level.getLength(), level.getWidth());
         this.playerLocation = gameboard.getPlayerCords();
     }
 
-    public void startGame() throws IOException {
+    private void playLevel() throws IOException
+    {
         String gameInput;
         Runnable gameCommand;
         while (!gameboard.isMazeExit(playerLocation.getCordX(),playerLocation.getCordY()))
@@ -45,10 +47,23 @@ public class GameProcessor {
                 continue;
             }
             gameCommand.run();
-
         }
-        System.out.println(gameboard.toString());
     }
 
-    // Implement generate level.
+    public void startGame() throws IOException {
+
+        while (true)
+        {
+            System.out.println("Level: "+level.getLevel()+" Size: "+level.getWidth()+"x"+level.getLength()+" Monsters: "+level.getMonsters()+" Treasures: "+level.getTreasures());
+            playLevel();
+            generateNextLevel();
+        }
+    }
+
+    private void generateNextLevel()
+    {
+        level.increaseLevel();
+        gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level.getLength(), level.getWidth());
+        playerLocation = gameboard.getPlayerCords();
+    }
 }
