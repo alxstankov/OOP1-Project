@@ -1,8 +1,8 @@
-package game;
+package game.models;
 
-import gameboard.Cell;
-import gameboard.Gameboard;
-import gameboard.GameboardGenerator;
+import gameboard.models.Cell;
+import gameboard.models.Gameboard;
+import gameboard.models.GameboardGenerator;
 import handlers.models.ConsoleInputHandler;
 import handlers.interfaces.InputHandler;
 

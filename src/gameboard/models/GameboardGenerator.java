@@ -1,4 +1,4 @@
-package gameboard;
+package gameboard.models;
 
 import java.util.*;
 
@@ -7,7 +7,6 @@ public class GameboardGenerator {
     private int width;
     private char[][] gameboard;
 
-    // Implements level params.
     public char[][] generateBoard(int length, int width, int monsters, int treasure)
     {
         setLength(length);

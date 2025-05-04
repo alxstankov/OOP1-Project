@@ -1,4 +1,4 @@
-package gameboard;
+package gameboard.models;
 
 public class Gameboard {
     private char[][] board;
