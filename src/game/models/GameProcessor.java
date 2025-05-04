@@ -1,20 +1,22 @@
 package game.models;
 
+import events.interfaces.Event;
 import gameboard.models.Cell;
 import gameboard.models.Gameboard;
 import gameboard.models.GameboardGenerator;
 import handlers.models.ConsoleInputHandler;
-import handlers.interfaces.InputHandler;
+import players.models.BasePlayer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class GameProcessor {
     private Gameboard gameboard;
     private Cell playerLocation;
     private GameboardGenerator generator = new GameboardGenerator();
-    private Map<String,Runnable> gameControls = new HashMap<>()
+    private BasePlayer player;
+    private Map<String, Supplier<Event>> gameControls = new HashMap<>()
     {{
         put("w",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
         put("a",()->gameboard.movePlayer(playerLocation.getCordX()-1,playerLocation.getCordY()));
@@ -22,37 +24,49 @@ public class GameProcessor {
         put("d",()->gameboard.movePlayer(playerLocation.getCordX()+1,playerLocation.getCordY()));
         put("jump",()->gameboard.movePlayer(level.getWidth()-2,level.getLength()-1));
     }};
-    private InputHandler inputHandler = new ConsoleInputHandler();
     private LevelProcessor level = new LevelProcessor();
 
-    public GameProcessor()
+    public GameProcessor(BasePlayer player)
     {
+        this.player = player;
         this.gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level.getLength(), level.getWidth());
         this.playerLocation = gameboard.getPlayerCords();
     }
 
-    private void playLevel() throws IOException
+    private void playLevel() throws Exception
     {
-        String gameInput;
-        Runnable gameCommand;
+        String[] gameInput;
+        Supplier<Event> gameCommand;
+        Event event;
         while (!gameboard.isMazeExit(playerLocation.getCordX(),playerLocation.getCordY()))
         {
             System.out.println(gameboard.toString());
             System.out.print(">> ");
-            gameInput = inputHandler.readContent();
-            gameCommand = gameControls.get(gameInput.toLowerCase());
+            gameInput = ConsoleInputHandler.readContent();
+            if (gameInput.length != 1)
+            {
+                System.out.println("No such input");
+                continue;
+            }
+
+            gameCommand = gameControls.get(gameInput[0]);
             if(gameCommand==null)
             {
                 System.out.println("No such input");
                 continue;
             }
-            gameCommand.run();
+            event = gameCommand.get();
+
+            if (event != null)
+            {
+                event.startEvent(player);
+            }
         }
     }
 
-    public void startGame() throws IOException {
+    public void startGame() throws Exception {
 
-        while (true)
+        while (level.getLevel()<=5)
         {
             System.out.println("Level: "+level.getLevel()+" Size: "+level.getWidth()+"x"+level.getLength()+" Monsters: "+level.getMonsters()+" Treasures: "+level.getTreasures());
             playLevel();

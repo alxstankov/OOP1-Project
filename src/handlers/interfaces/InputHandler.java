@@ -3,5 +3,7 @@ package handlers.interfaces;
 import java.io.IOException;
 
 public interface InputHandler {
-    String readContent() throws IOException;
+    static String[] readContent() throws IOException {
+        return null;
+    }
 }

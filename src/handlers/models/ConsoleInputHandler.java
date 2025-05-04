@@ -7,10 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ConsoleInputHandler implements InputHandler {
-    private BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
+    private static BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
 
-    @Override
-    public String readContent() throws IOException {
-        return consoleReader.readLine();
+    public static String[] readContent() throws IOException {
+        return consoleReader.readLine().toLowerCase().split(" ");
     }
 }

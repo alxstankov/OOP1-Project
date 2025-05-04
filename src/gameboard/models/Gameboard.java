@@ -1,5 +1,8 @@
 package gameboard.models;
 
+import events.interfaces.Event;
+import events.models.PlayerLevelUpEvent;
+
 public class Gameboard {
     private char[][] board;
     private int length;
@@ -14,17 +17,18 @@ public class Gameboard {
         this.board[playerCords.getCordY()][playerCords.getCordX()] = 'P';
     }
 
-    public void movePlayer(int newCordX, int newCordY)
+    public Event movePlayer(int newCordX, int newCordY)
     {
+        Event event = null;
         if (isCordOutOfBounds(newCordX,newCordY) || isCellWall(newCordX,newCordY))
         {
             System.out.println("The player cannot move there");
-            return;
         }
 
         if (isMazeExit(newCordX,newCordY))
         {
             System.out.println("Maze cleared");
+            event = new PlayerLevelUpEvent();
         }
 
         if (isCellMonster(newCordX, newCordY))
@@ -41,6 +45,8 @@ public class Gameboard {
         board[newCordY][newCordX] = 'P';
 
         playerCords.setCords(newCordX,newCordY);
+
+        return event;
     }
 
     private boolean isCellWall(int x, int y)

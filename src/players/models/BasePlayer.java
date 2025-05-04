@@ -1,6 +1,6 @@
 package players.models;
 
-public abstract class BasePlayer{
+public abstract class BasePlayer {
     private int baseHealth = 50;
     private int basicAttack;
     private int spellAttack;
