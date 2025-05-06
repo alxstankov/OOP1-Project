@@ -1,9 +1,8 @@
 import game.models.GameProcessor;
-import players.models.Person;
 
 public class Application {
     public static void main(String[] args) {
-        GameProcessor game = new GameProcessor(new Person());
+        GameProcessor game = new GameProcessor();
         try{
             game.startGame();
         } catch (Exception e) {

@@ -6,6 +6,9 @@ import gameboard.models.Gameboard;
 import gameboard.models.GameboardGenerator;
 import handlers.models.ConsoleInputHandler;
 import players.models.BasePlayer;
+import players.models.Person;
+import players.models.Warrior;
+import players.models.Wizard;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +19,7 @@ public class GameProcessor {
     private Cell playerLocation;
     private GameboardGenerator generator = new GameboardGenerator();
     private BasePlayer player;
-    private Map<String, Supplier<Event>> gameControls = new HashMap<>()
+    private Map<String, Supplier<Event>> gameboardControls = new HashMap<>()
     {{
         put("w",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
         put("a",()->gameboard.movePlayer(playerLocation.getCordX()-1,playerLocation.getCordY()));
@@ -25,10 +28,16 @@ public class GameProcessor {
         put("jump",()->gameboard.movePlayer(level.getWidth()-2,level.getLength()-1));
     }};
     private LevelProcessor level = new LevelProcessor();
+    private Map<String,BasePlayer> playerSelector = new HashMap<>()
+    {{
+        put("person",new Person());
+        put("wizard",new Wizard());
+        put("warrior",new Warrior());
 
-    public GameProcessor(BasePlayer player)
+    }};
+
+    public GameProcessor()
     {
-        this.player = player;
         this.gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level.getLength(), level.getWidth());
         this.playerLocation = gameboard.getPlayerCords();
     }
@@ -49,7 +58,7 @@ public class GameProcessor {
                 continue;
             }
 
-            gameCommand = gameControls.get(gameInput[0]);
+            gameCommand = gameboardControls.get(gameInput[0]);
             if(gameCommand==null)
             {
                 System.out.println("No such input");
@@ -65,6 +74,27 @@ public class GameProcessor {
     }
 
     public void startGame() throws Exception {
+        String[] gameInput;
+
+        while (player == null)
+        {
+            System.out.println("Please, choose a player type [ person / wizard / warrior ]:");
+            System.out.print(">> ");
+            gameInput = ConsoleInputHandler.readContent();
+
+            if (gameInput.length != 1)
+            {
+                System.out.println("No such input");
+                continue;
+            }
+
+            this.player = playerSelector.get(gameInput[0]);
+
+            if(player==null)
+            {
+                System.out.println("No such player type");
+            }
+        }
 
         while (level.getLevel()<=5)
         {

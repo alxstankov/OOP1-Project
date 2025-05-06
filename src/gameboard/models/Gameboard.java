@@ -27,7 +27,6 @@ public class Gameboard {
 
         if (isMazeExit(newCordX,newCordY))
         {
-            System.out.println("Maze cleared");
             event = new PlayerLevelUpEvent();
         }
 

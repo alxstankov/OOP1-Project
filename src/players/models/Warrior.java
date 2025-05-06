@@ -7,6 +7,7 @@ public class Warrior extends BasePlayer {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "Player type: Warrior \n"+
+                super.toString();
     }
 }
