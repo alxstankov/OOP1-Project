@@ -1,6 +1,6 @@
 package players.models;
 
-public class Warrior extends BasePlayer {
+public class Warrior extends Player {
     public Warrior() {
         super(40,10);
     }

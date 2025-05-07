@@ -10,7 +10,7 @@ public class LevelProcessor {
         put("length",10);
         put("width",10);
         put("monsters",2);
-        put("treasure",2);
+        put("treasures",2);
     }};
 
     private Map<String,Integer> previousLevel;
@@ -28,7 +28,7 @@ public class LevelProcessor {
     }
 
     public int getTreasures() {
-        return currentLevel.get("treasure");
+        return currentLevel.get("treasures");
     }
 
     public int getLevel() {

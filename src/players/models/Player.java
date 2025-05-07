@@ -1,11 +1,11 @@
 package players.models;
 
-public abstract class BasePlayer {
+public abstract class Player {
     private int baseHealth = 50;
     private int basicAttack;
     private int spellAttack;
 
-    public BasePlayer(int basicAttack, int spellAttack)
+    public Player(int basicAttack, int spellAttack)
     {
         this.basicAttack = basicAttack;
         this.spellAttack = spellAttack;

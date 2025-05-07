@@ -6,9 +6,6 @@ public class Cell {
     private int cordX;
     private int cordY;
 
-    // X - Horizontal Axis
-    // Y - Vertical axis
-
     public Cell(int x, int y)
     {
         this.cordX = x;

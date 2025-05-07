@@ -12,7 +12,7 @@ public class GameboardGenerator {
         setLength(length);
         setWidth(width);
 
-        this.gameboard = new char[this.length+1][this.width+1];
+        this.gameboard = new char[this.length][this.width];
 
         fillCells();
 

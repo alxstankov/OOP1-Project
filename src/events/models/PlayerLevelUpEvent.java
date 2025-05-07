@@ -2,17 +2,16 @@ package events.models;
 
 import events.interfaces.Event;
 import handlers.models.ConsoleInputHandler;
-import players.models.BasePlayer;
+import players.models.Player;
 
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class PlayerLevelUpEvent implements Event{
     private int levelUpPoints = 30;
-    private BasePlayer player;
+    private Player player;
     private Map<String, Consumer<Integer>> eventControls = new HashMap<>()
     {{
         put("health",(points) -> player.updateHealth(points));
@@ -22,7 +21,7 @@ public class PlayerLevelUpEvent implements Event{
 
 
     @Override
-    public boolean startEvent(BasePlayer player) throws Exception {
+    public boolean startEvent(Player player) throws Exception {
         this.player = player;
 
         Consumer<Integer> eventCommand;

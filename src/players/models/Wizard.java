@@ -1,6 +1,6 @@
 package players.models;
 
-public class Wizard extends BasePlayer {
+public class Wizard extends Player {
     public Wizard() {
         super(10, 40);
     }

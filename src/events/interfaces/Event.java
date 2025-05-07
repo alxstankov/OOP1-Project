@@ -1,8 +1,8 @@
 package events.interfaces;
 
-import players.models.BasePlayer;
+import players.models.Player;
 
 
 public interface Event {
-    boolean startEvent(BasePlayer player) throws Exception;
+    boolean startEvent(Player player) throws Exception;
 }

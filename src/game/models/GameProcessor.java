@@ -5,7 +5,7 @@ import gameboard.models.Cell;
 import gameboard.models.Gameboard;
 import gameboard.models.GameboardGenerator;
 import handlers.models.ConsoleInputHandler;
-import players.models.BasePlayer;
+import players.models.Player;
 import players.models.Person;
 import players.models.Warrior;
 import players.models.Wizard;
@@ -18,7 +18,7 @@ public class GameProcessor {
     private Gameboard gameboard;
     private Cell playerLocation;
     private GameboardGenerator generator = new GameboardGenerator();
-    private BasePlayer player;
+    private Player player;
     private Map<String, Supplier<Event>> gameboardControls = new HashMap<>()
     {{
         put("w",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
@@ -28,7 +28,7 @@ public class GameProcessor {
         put("jump",()->gameboard.movePlayer(level.getWidth()-2,level.getLength()-1));
     }};
     private LevelProcessor level = new LevelProcessor();
-    private Map<String,BasePlayer> playerSelector = new HashMap<>()
+    private Map<String, Player> playerSelector = new HashMap<>()
     {{
         put("person",new Person());
         put("wizard",new Wizard());
