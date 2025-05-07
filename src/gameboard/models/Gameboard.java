@@ -2,18 +2,24 @@ package gameboard.models;
 
 import events.interfaces.Event;
 import events.models.PlayerLevelUpEvent;
+import events.models.TreasureEvent;
+import treasures.models.Treasure;
+
+import java.util.List;
 
 public class Gameboard {
     private char[][] board;
     private int length;
     private int width;
     private Cell playerCords = new Cell(1,0);
+    private List<Treasure> treasureList;
 
-    public Gameboard(char[][] board, int length, int width)
+    public Gameboard(char[][] board, int length, int width,List<Treasure> treasureList)
     {
         this.board = board;
         this.length = length;
         this.width = width;
+        this.treasureList = treasureList;
         this.board[playerCords.getCordY()][playerCords.getCordX()] = 'P';
     }
 
@@ -23,6 +29,7 @@ public class Gameboard {
         if (isCordOutOfBounds(newCordX,newCordY) || isCellWall(newCordX,newCordY))
         {
             System.out.println("The player cannot move there");
+            return event;
         }
 
         if (isMazeExit(newCordX,newCordY))
@@ -38,6 +45,7 @@ public class Gameboard {
         if (isCellTreasure(newCordX, newCordY))
         {
             System.out.println("Treasure encounter");
+            event = new TreasureEvent(treasureList.removeFirst());
         }
 
         board[playerCords.getCordY()][playerCords.getCordX()] = '.';

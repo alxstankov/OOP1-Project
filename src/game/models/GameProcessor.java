@@ -9,6 +9,7 @@ import players.models.Player;
 import players.models.Person;
 import players.models.Warrior;
 import players.models.Wizard;
+import treasures.models.TreasureListGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class GameProcessor {
 
     public GameProcessor()
     {
-        this.gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level.getLength(), level.getWidth());
+        this.gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level.getLength(), level.getWidth(), TreasureListGenerator.generateTreasureList(level.getTreasures(), level.getLevel()));
         this.playerLocation = gameboard.getPlayerCords();
     }
 
@@ -107,7 +108,7 @@ public class GameProcessor {
     private void generateNextLevel()
     {
         level.increaseLevel();
-        gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level.getLength(), level.getWidth());
+        gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level.getLength(), level.getWidth(),TreasureListGenerator.generateTreasureList(level.getTreasures(), level.getLevel()));
         playerLocation = gameboard.getPlayerCords();
     }
 }

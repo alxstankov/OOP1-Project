@@ -9,6 +9,7 @@ public class Application {
             throw new RuntimeException(e);
         }
 
+
 //        Create Events Interface
 //        Where this Interface is used to create Player upgrade event, Monster Battle event, Treasure Find event.
 //        Each Event has special inputs, that probably block main CLI inputs until the event is done.
