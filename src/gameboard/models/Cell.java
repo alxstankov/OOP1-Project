@@ -1,8 +1,7 @@
 package gameboard.models;
 
-import java.util.Objects;
 
-public class Cell {
+public class Cell{
     private int cordX;
     private int cordY;
 
@@ -24,16 +23,5 @@ public class Cell {
     {
         cordX = x;
         cordY = y;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Cell cell)) return false;
-        return cordX == cell.cordX && cordY == cell.cordY;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cordX, cordY);
     }
 }

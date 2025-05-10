@@ -16,10 +16,9 @@ public class GameboardGenerator {
 
         fillCells();
 
-        List<Cell> result = new ArrayList<>();
-        Set<Cell> visitedCells = new HashSet<>();
+        List<Cell> visitedCells = new ArrayList<>();
 
-        generatePaths(new Cell(1,1),result,visitedCells);
+        generatePaths(new Cell(1,1),visitedCells);
 
         gameboard[0][1] = '.';
 
@@ -32,20 +31,19 @@ public class GameboardGenerator {
         Random specialCellSelector = new Random();
 
         for (int i = 0; i < monsters; i++) {
-            int numEndCells = ((result.size() - 1) - (result.size() - 1) / 2);
-            int dragonCellIndex = specialCellSelector.nextInt(numEndCells);
-            Cell dragonCell = result.get(dragonCellIndex);
+            int dragonCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
+            Cell dragonCell = visitedCells.get(dragonCellIndex);
             gameboard[dragonCell.getCordY()][dragonCell.getCordX()] = 'M';
             visitedCells.remove(dragonCell);
-            result.remove(dragonCell);
         }
 
         for (int i = 0; i < treasure; i++) {
             int treasureCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
-            Cell treasureCell = (Cell) visitedCells.toArray()[treasureCellIndex];
+            Cell treasureCell = visitedCells.get(treasureCellIndex);
             gameboard[treasureCell.getCordY()][treasureCell.getCordX()] = 'T';
             visitedCells.remove(treasureCell);
         }
+
         return gameboard;
     }
 
@@ -68,19 +66,17 @@ public class GameboardGenerator {
         this.width = width;
     }
 
-    private void generatePaths(Cell startCell,List<Cell> result, Set<Cell> visitedCells)
+    private void generatePaths(Cell startCell,List<Cell> visitedCells)
     {
         gameboard[startCell.getCordY()][startCell.getCordX()] = '.';
         visitedCells.add(startCell);
-        result.add(startCell);
 
         List<Cell> neighbours = checkNeighbours(startCell.getCordX(), startCell.getCordY());
-
 
         Collections.shuffle(neighbours);
         for (Cell neighbour : neighbours) {
             if (!visitedCells.contains(neighbour) && countPathNeighbours(neighbour.getCordX(),neighbour.getCordY())<=1) {
-                generatePaths(neighbour,result,visitedCells);
+                generatePaths(neighbour,visitedCells);
             }
         }
 
