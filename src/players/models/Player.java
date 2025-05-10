@@ -33,7 +33,7 @@ public abstract class Player {
     public double getBasicAttack() {
         if (inventory.containsKey(TreasureType.WEAPON))
         {
-            double calculatedAttack = basicAttack + basicAttack*(float)(inventory.get(TreasureType.WEAPON).getStat())/100;
+            double calculatedAttack = basicAttack + basicAttack*(double) (inventory.get(TreasureType.WEAPON).getStat())/100;
             BigDecimal bd = new BigDecimal(calculatedAttack);
             return bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
         }
@@ -43,7 +43,7 @@ public abstract class Player {
     public double getSpellAttack() {
         if (inventory.containsKey(TreasureType.SPELL))
         {
-            double calculatedAttack = spellAttack + spellAttack*(float)(inventory.get(TreasureType.SPELL).getStat())/100;
+            double calculatedAttack = spellAttack + spellAttack*(double) (inventory.get(TreasureType.SPELL).getStat())/100;
             BigDecimal bd = new BigDecimal(calculatedAttack);
             return bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
         }
@@ -73,7 +73,7 @@ public abstract class Player {
     {
         if (inventory.containsKey(TreasureType.ARMOR))
         {
-            double calculatedAttack = dealtDamage*(float)(inventory.get(TreasureType.ARMOR).getStat())/100;
+            double calculatedAttack = dealtDamage*(double)(inventory.get(TreasureType.ARMOR).getStat())/100;
             BigDecimal bd = new BigDecimal(calculatedAttack);
             baseHealth -= bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
         }

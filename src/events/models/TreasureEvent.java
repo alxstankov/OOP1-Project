@@ -33,7 +33,7 @@ public class TreasureEvent implements Event {
                 System.out.println(playerTreasure.toString());
             }
             System.out.println("Do you want to get this item? [y/n]");
-            System.out.print(">>");
+            System.out.print(">> ");
 
             gameInput = ConsoleInputHandler.readContent();
 
