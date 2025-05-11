@@ -32,7 +32,7 @@ public class PlayerLevelUpEvent implements Event{
             System.out.println(player);
             System.out.println("Remaining amount of points: "+levelUpPoints);
             System.out.println("Choose which attribute to upgrade: health / attack / spell [amount of points]");
-            System.out.print(">>");
+
             eventInput = ConsoleInputHandler.readContent();
 
             if (eventInput.length != 2)

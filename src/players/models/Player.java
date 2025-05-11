@@ -1,12 +1,11 @@
 package players.models;
 
+import handlers.models.RoundingCalculator;
 import treasures.enums.TreasureType;
 import treasures.models.Spell;
 import treasures.models.Treasure;
 import treasures.models.Weapon;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,8 +33,7 @@ public abstract class Player {
         if (inventory.containsKey(TreasureType.WEAPON))
         {
             double calculatedAttack = basicAttack * (1+inventory.get(TreasureType.WEAPON).getStat());
-            BigDecimal bd = BigDecimal.valueOf(calculatedAttack);
-            return bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
+            return RoundingCalculator.roundDecimal(calculatedAttack);
         }
         return basicAttack;
     }
@@ -44,8 +42,7 @@ public abstract class Player {
         if (inventory.containsKey(TreasureType.SPELL))
         {
             double calculatedAttack = spellAttack * (1+inventory.get(TreasureType.SPELL).getStat());
-            BigDecimal bd = BigDecimal.valueOf(calculatedAttack);
-            return bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
+            return RoundingCalculator.roundDecimal(calculatedAttack);
         }
         return spellAttack;
     }
@@ -64,7 +61,6 @@ public abstract class Player {
         basicAttack += additionalBasicAttack;
     }
 
-
     public void updateSpellAttack(int additionalSpellAttack) {
         spellAttack += additionalSpellAttack;
     }
@@ -80,11 +76,11 @@ public abstract class Player {
         {
             baseHealth -= dealtDamage;
         }
-        baseHealth = BigDecimal.valueOf(baseHealth).setScale(1, RoundingMode.HALF_UP).doubleValue();
+        baseHealth = RoundingCalculator.roundDecimal(baseHealth);
     }
 
     public void updateHealth(double additionalHealth) {
-        baseHealth = BigDecimal.valueOf(baseHealth+additionalHealth).setScale(1, RoundingMode.HALF_UP).doubleValue();
+        baseHealth = RoundingCalculator.roundDecimal(baseHealth+additionalHealth);
     }
 
 

@@ -1,7 +1,7 @@
 package treasures.models;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import handlers.models.RoundingCalculator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +15,7 @@ public class TreasureListGenerator {
         for (int i=0; i<numberOfItems;i++)
         {
             if (levelMultiplier != 1) {
-                multipliedStats = BigDecimal.valueOf(0.2+((randomNumberGenerator.nextInt(levelMultiplier-1+1)+1)*0.05)).setScale(1, RoundingMode.HALF_UP).doubleValue();
+                multipliedStats = RoundingCalculator.roundDecimal(0.2+((randomNumberGenerator.nextInt(levelMultiplier-1+1)+1)*0.05));
             }
             else
             {

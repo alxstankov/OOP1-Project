@@ -6,8 +6,6 @@ import monster.models.Monster;
 import players.models.Player;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -85,8 +83,7 @@ public class BattleEvent implements Event {
             {
                 calculatedHealth = initialHealth/4;
             }
-            BigDecimal bd = new BigDecimal(calculatedHealth);
-            player.updateHealth(bd.setScale(1, RoundingMode.HALF_UP).doubleValue());
+            player.updateHealth(calculatedHealth);
         }
         return false;
     }
@@ -97,7 +94,6 @@ public class BattleEvent implements Event {
         double attack = 0;
         while (attack == 0) {
             System.out.println("Select an attack:");
-            System.out.print(">> ");
             eventInput = ConsoleInputHandler.readContent();
 
             if (eventInput.length != 1) {

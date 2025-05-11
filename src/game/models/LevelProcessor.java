@@ -59,4 +59,9 @@ public class LevelProcessor {
         previousLevel = new HashMap<>(currentLevel);
         currentLevel = levelBuffer;
     }
+
+    @Override
+    public String toString() {
+        return "Level: "+getLevel()+" Size: "+getWidth()+"x"+getLength()+" Monsters: "+getMonsters()+" Treasures: "+getTreasures();
+    }
 }

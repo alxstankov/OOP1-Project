@@ -1,7 +1,7 @@
 package monster.models;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import handlers.models.RoundingCalculator;
+
 import java.util.Random;
 
 public class Monster {
@@ -17,7 +17,7 @@ public class Monster {
         this.strength = 25 + (10 * level);
         this.mana = 25 + (10 * level);
         this.health = 50 + (10 * level);
-        this.armor = BigDecimal.valueOf(0.15 + (0.05 * level)).setScale(1,RoundingMode.HALF_UP).doubleValue();
+        this.armor = RoundingCalculator.roundDecimal(0.15 + (0.05 * level));
 
     }
 
@@ -38,7 +38,7 @@ public class Monster {
 
     public void dealDamage(double dealtDamage) {
         double calculatedAttack = dealtDamage*(1-armor);
-        this.health = BigDecimal.valueOf(health-calculatedAttack).setScale(1, RoundingMode.HALF_UP).doubleValue();
+        this.health = RoundingCalculator.roundDecimal(health-calculatedAttack);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Monster {
         return "Monster:\n" +
                 "- Strength: "+strength+"\n" +
                 "- Mana: "+mana+"\n" +
-                "- Armor: "+armor*100+"% \n"+
+                "- Armor: "+RoundingCalculator.roundDecimal(armor*100)+"% \n"+
                 "- Health: "+health+"\n";
     }
 }

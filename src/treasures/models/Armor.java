@@ -1,5 +1,6 @@
 package treasures.models;
 
+import handlers.models.RoundingCalculator;
 import treasures.enums.TreasureType;
 
 public class Armor extends Treasure {
@@ -10,6 +11,6 @@ public class Armor extends Treasure {
     @Override
     public String toString() {
         return "Armor:\n" +
-                "- Protection: "+getStat()*100+"%";
+                "- Protection: "+ RoundingCalculator.roundDecimal(getStat()*100) +"%";
     }
 }

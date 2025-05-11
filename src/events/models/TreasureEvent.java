@@ -5,7 +5,6 @@ import handlers.models.ConsoleInputHandler;
 import players.models.Player;
 import treasures.models.Treasure;
 
-
 public class TreasureEvent implements Event {
     private Treasure foundTreasure;
 
@@ -33,7 +32,6 @@ public class TreasureEvent implements Event {
                 System.out.println(playerTreasure.toString());
             }
             System.out.println("Do you want to get this item? [y/n]");
-            System.out.print(">> ");
 
             eventInput = ConsoleInputHandler.readContent();
 
@@ -42,7 +40,6 @@ public class TreasureEvent implements Event {
                 System.out.println("No such input");
                 continue;
             }
-
 
              switch (eventInput[0])
             {

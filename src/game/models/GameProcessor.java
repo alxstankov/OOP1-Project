@@ -9,7 +9,6 @@ import players.models.Player;
 import players.models.Person;
 import players.models.Warrior;
 import players.models.Wizard;
-import treasures.models.TreasureListGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +50,6 @@ public class GameProcessor {
         while (!gameboard.isMazeExit(playerLocation.getCordX(),playerLocation.getCordY())&&player.getCurrentHealth()>0)
         {
             System.out.println(gameboard.toString());
-            System.out.print(">> ");
             gameInput = ConsoleInputHandler.readContent();
             if (gameInput.length != 1)
             {
@@ -80,7 +78,6 @@ public class GameProcessor {
         while (player == null)
         {
             System.out.println("Please, choose a player type [ person / wizard / warrior ]:");
-            System.out.print(">> ");
             gameInput = ConsoleInputHandler.readContent();
 
             if (gameInput.length != 1)
@@ -99,7 +96,7 @@ public class GameProcessor {
 
         while (level.getLevel()<=5)
         {
-            System.out.println("Level: "+level.getLevel()+" Size: "+level.getWidth()+"x"+level.getLength()+" Monsters: "+level.getMonsters()+" Treasures: "+level.getTreasures());
+            System.out.println(level.toString());
             playLevel();
             if (player.getCurrentHealth()<=0)
             {

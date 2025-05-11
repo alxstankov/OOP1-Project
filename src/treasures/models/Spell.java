@@ -1,5 +1,6 @@
 package treasures.models;
 
+import handlers.models.RoundingCalculator;
 import treasures.enums.TreasureType;
 
 public class Spell extends Treasure {
@@ -10,6 +11,6 @@ public class Spell extends Treasure {
     @Override
     public String toString() {
         return "Spell:\n" +
-                "- Spell boost: "+getStat()*100+"%";
+                "- Spell boost: "+ RoundingCalculator.roundDecimal(getStat()*100) +"%";
     }
 }
