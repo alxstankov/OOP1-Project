@@ -1,5 +1,7 @@
 package treasures.models;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,15 +11,15 @@ public class TreasureListGenerator {
     {
         List<Treasure> treasureList = new ArrayList<>();
         Random randomNumberGenerator = new Random();
-        int multipliedStats;
+        double multipliedStats;
         for (int i=0; i<numberOfItems;i++)
         {
             if (levelMultiplier != 1) {
-                multipliedStats = 20+((randomNumberGenerator.nextInt(levelMultiplier-1+1)+1)*5);
+                multipliedStats = BigDecimal.valueOf(0.2+((randomNumberGenerator.nextInt(levelMultiplier-1+1)+1)*0.05)).setScale(1, RoundingMode.HALF_UP).doubleValue();
             }
             else
             {
-                multipliedStats = 20;
+                multipliedStats = 0.2;
             }
 
             switch (randomNumberGenerator.nextInt(3-1+1)+1)

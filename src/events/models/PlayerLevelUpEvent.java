@@ -4,7 +4,6 @@ import events.interfaces.Event;
 import handlers.models.ConsoleInputHandler;
 import players.models.Player;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -25,7 +24,7 @@ public class PlayerLevelUpEvent implements Event{
         this.player = player;
 
         Consumer<Integer> eventCommand;
-        String[] gameInput;
+        String[] eventInput;
         int inputPoints;
 
         while (levelUpPoints>0)
@@ -34,15 +33,15 @@ public class PlayerLevelUpEvent implements Event{
             System.out.println("Remaining amount of points: "+levelUpPoints);
             System.out.println("Choose which attribute to upgrade: health / attack / spell [amount of points]");
             System.out.print(">>");
-            gameInput = ConsoleInputHandler.readContent();
+            eventInput = ConsoleInputHandler.readContent();
 
-            if (gameInput.length != 2)
+            if (eventInput.length != 2)
             {
                 System.out.println("No such input");
                 continue;
             }
 
-            eventCommand = eventControls.get(gameInput[0]);
+            eventCommand = eventControls.get(eventInput[0]);
             if(eventCommand==null)
             {
                 System.out.println("No such input");
@@ -50,7 +49,7 @@ public class PlayerLevelUpEvent implements Event{
             }
             try
             {
-                inputPoints = Integer.parseInt(gameInput[1]);
+                inputPoints = Integer.parseInt(eventInput[1]);
             }
             catch (NumberFormatException _e)
             {

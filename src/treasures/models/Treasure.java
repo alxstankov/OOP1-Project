@@ -4,9 +4,9 @@ import treasures.enums.TreasureType;
 
 public abstract class Treasure {
     private TreasureType type;
-    private int stat;
+    private double stat;
 
-    public Treasure(TreasureType type, int stat)
+    public Treasure(TreasureType type, double stat)
     {
         this.type = type;
         this.stat = stat;
@@ -16,7 +16,7 @@ public abstract class Treasure {
         return type;
     }
 
-    public int getStat() {
+    public double getStat() {
         return stat;
     }
 

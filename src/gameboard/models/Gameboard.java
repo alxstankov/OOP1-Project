@@ -1,9 +1,12 @@
 package gameboard.models;
 
 import events.interfaces.Event;
+import events.models.BattleEvent;
 import events.models.PlayerLevelUpEvent;
 import events.models.TreasureEvent;
+import game.models.LevelProcessor;
 import treasures.models.Treasure;
+import treasures.models.TreasureListGenerator;
 
 import java.util.List;
 
@@ -11,15 +14,17 @@ public class Gameboard {
     private char[][] board;
     private int length;
     private int width;
+    private int level;
     private Cell playerCords = new Cell(1,0);
     private List<Treasure> treasureList;
 
-    public Gameboard(char[][] board, int length, int width,List<Treasure> treasureList)
+    public Gameboard(char[][] board, LevelProcessor level)
     {
         this.board = board;
-        this.length = length;
-        this.width = width;
-        this.treasureList = treasureList;
+        this.length = level.getLength();
+        this.width = level.getWidth();
+        this.level = level.getLevel();
+        this.treasureList = TreasureListGenerator.generateTreasureList(level.getTreasures(), level.getLevel());
         this.board[playerCords.getCordY()][playerCords.getCordX()] = 'P';
     }
 
@@ -39,7 +44,7 @@ public class Gameboard {
 
         if (isCellMonster(newCordX, newCordY))
         {
-            System.out.println("Monster encounter");
+            event = new BattleEvent(level);
         }
 
         if (isCellTreasure(newCordX, newCordY))

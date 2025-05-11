@@ -16,8 +16,8 @@ public abstract class Player {
     private double spellAttack;
     private Map<TreasureType, Treasure> inventory = new HashMap<>()
     {{
-        put(TreasureType.WEAPON,new Weapon(20));
-        put(TreasureType.SPELL,new Spell(20));
+        put(TreasureType.WEAPON,new Weapon(0.20));
+        put(TreasureType.SPELL,new Spell(0.20));
     }};
 
     public Player(int basicAttack, int spellAttack)
@@ -33,8 +33,8 @@ public abstract class Player {
     public double getBasicAttack() {
         if (inventory.containsKey(TreasureType.WEAPON))
         {
-            double calculatedAttack = basicAttack + basicAttack*(double) (inventory.get(TreasureType.WEAPON).getStat())/100;
-            BigDecimal bd = new BigDecimal(calculatedAttack);
+            double calculatedAttack = basicAttack * (1+inventory.get(TreasureType.WEAPON).getStat());
+            BigDecimal bd = BigDecimal.valueOf(calculatedAttack);
             return bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
         }
         return basicAttack;
@@ -43,8 +43,8 @@ public abstract class Player {
     public double getSpellAttack() {
         if (inventory.containsKey(TreasureType.SPELL))
         {
-            double calculatedAttack = spellAttack + spellAttack*(double) (inventory.get(TreasureType.SPELL).getStat())/100;
-            BigDecimal bd = new BigDecimal(calculatedAttack);
+            double calculatedAttack = spellAttack * (1+inventory.get(TreasureType.SPELL).getStat());
+            BigDecimal bd = BigDecimal.valueOf(calculatedAttack);
             return bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
         }
         return spellAttack;
@@ -73,18 +73,18 @@ public abstract class Player {
     {
         if (inventory.containsKey(TreasureType.ARMOR))
         {
-            double calculatedAttack = dealtDamage*(double)(inventory.get(TreasureType.ARMOR).getStat())/100;
-            BigDecimal bd = new BigDecimal(calculatedAttack);
-            baseHealth -= bd.setScale(1, RoundingMode.HALF_UP).doubleValue();
+            double calculatedAttack = dealtDamage*(1-inventory.get(TreasureType.ARMOR).getStat());
+            baseHealth -= calculatedAttack;
         }
         else
         {
             baseHealth -= dealtDamage;
         }
+        baseHealth = BigDecimal.valueOf(baseHealth).setScale(1, RoundingMode.HALF_UP).doubleValue();
     }
 
-    public void updateHealth(int additionalHealth) {
-        baseHealth += additionalHealth;
+    public void updateHealth(double additionalHealth) {
+        baseHealth = BigDecimal.valueOf(baseHealth+additionalHealth).setScale(1, RoundingMode.HALF_UP).doubleValue();
     }
 
 

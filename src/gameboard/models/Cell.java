@@ -1,7 +1,7 @@
 package gameboard.models;
 
 
-public class Cell{
+public class Cell implements Comparable<Cell>{
     private int cordX;
     private int cordY;
 
@@ -23,5 +23,16 @@ public class Cell{
     {
         cordX = x;
         cordY = y;
+    }
+
+
+    @Override
+    public int compareTo(Cell o) {
+            int comparison = this.cordY - o.cordY;
+            if (comparison == 0)
+            {
+                comparison = this.cordX - o.cordX;
+            }
+            return comparison;
     }
 }

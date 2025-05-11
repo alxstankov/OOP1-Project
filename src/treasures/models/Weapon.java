@@ -3,13 +3,13 @@ package treasures.models;
 import treasures.enums.TreasureType;
 
 public class Weapon extends Treasure {
-    public Weapon(int stat) {
+    public Weapon(double stat) {
         super(TreasureType.WEAPON, stat);
     }
 
     @Override
     public String toString() {
         return "Weapon:\n" +
-                "- Attacking boost: "+getStat()+"%";
+                "- Attacking boost: "+getStat()*100+"%";
     }
 }

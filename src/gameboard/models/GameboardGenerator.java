@@ -9,8 +9,8 @@ public class GameboardGenerator {
 
     public char[][] generateBoard(int length, int width, int monsters, int treasure)
     {
-        setLength(length);
-        setWidth(width);
+        this.length = length;
+        this.width = width;
 
         this.gameboard = new char[this.length][this.width];
 
@@ -28,10 +28,12 @@ public class GameboardGenerator {
         }
         gameboard[this.length - 1][this.width - 2] = '.';
 
+        Collections.sort(visitedCells);
         Random specialCellSelector = new Random();
 
         for (int i = 0; i < monsters; i++) {
-            int dragonCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
+            int numEndCells = ((visitedCells.size() - 1) - (visitedCells.size() - 1) / 2);
+            int dragonCellIndex = specialCellSelector.nextInt((visitedCells.size() - 1)-numEndCells+1)+numEndCells;
             Cell dragonCell = visitedCells.get(dragonCellIndex);
             gameboard[dragonCell.getCordY()][dragonCell.getCordX()] = 'M';
             visitedCells.remove(dragonCell);
@@ -56,14 +58,6 @@ public class GameboardGenerator {
                 gameboard[i][j] ='#';
             }
         }
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
     }
 
     private void generatePaths(Cell startCell,List<Cell> visitedCells)

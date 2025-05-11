@@ -17,7 +17,7 @@ public class TreasureEvent implements Event {
     @Override
     public boolean startEvent(Player player) throws Exception {
         Treasure playerTreasure = player.getTreasureItem(foundTreasure.getTreasureType());
-        String[] gameInput;
+        String[] eventInput;
 
         eventLogic: while (true)
         {
@@ -35,16 +35,16 @@ public class TreasureEvent implements Event {
             System.out.println("Do you want to get this item? [y/n]");
             System.out.print(">> ");
 
-            gameInput = ConsoleInputHandler.readContent();
+            eventInput = ConsoleInputHandler.readContent();
 
-            if (gameInput.length != 1)
+            if (eventInput.length != 1)
             {
                 System.out.println("No such input");
                 continue;
             }
 
 
-             switch (gameInput[0])
+             switch (eventInput[0])
             {
                 case "y":
                     player.pickUpItem(foundTreasure);
