@@ -1,7 +1,7 @@
 package events.models;
 
 import events.interfaces.Event;
-import handlers.models.ConsoleInputHandler;
+import handlers.models.InputHandler;
 import players.models.Player;
 
 import java.util.HashMap;
@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 public class PlayerLevelUpEvent implements Event{
     private int levelUpPoints = 30;
     private Player player;
+    private transient InputHandler handler;
     private Map<String, Consumer<Integer>> eventControls = new HashMap<>()
     {{
         put("health",(points) -> player.updateHealth(points));
@@ -18,6 +19,10 @@ public class PlayerLevelUpEvent implements Event{
         put("spell",(points) -> player.updateSpellAttack(points));
     }};
 
+
+    public void setHandler(InputHandler handler) {
+        this.handler = handler;
+    }
 
     @Override
     public boolean startEvent(Player player) throws Exception {
@@ -33,7 +38,11 @@ public class PlayerLevelUpEvent implements Event{
             System.out.println("Remaining amount of points: "+levelUpPoints);
             System.out.println("Choose which attribute to upgrade: health / attack / spell [amount of points]");
 
-            eventInput = ConsoleInputHandler.readContent();
+            eventInput = handler.handleCommand();
+
+            if (eventInput == null) {
+                continue;
+            }
 
             if (eventInput.length != 2)
             {

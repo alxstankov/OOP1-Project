@@ -1,7 +1,9 @@
 package gameboard.models;
 
 
-public class Cell implements Comparable<Cell>{
+import java.io.Serializable;
+
+public class Cell implements Comparable<Cell>, Serializable {
     private int cordX;
     private int cordY;
 

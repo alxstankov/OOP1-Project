@@ -2,7 +2,9 @@ package treasures.models;
 
 import treasures.enums.TreasureType;
 
-public abstract class Treasure {
+import java.io.Serializable;
+
+public abstract class Treasure implements Serializable {
     private TreasureType type;
     private double stat;
 

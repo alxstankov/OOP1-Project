@@ -8,9 +8,10 @@ import game.models.LevelProcessor;
 import treasures.models.Treasure;
 import treasures.models.TreasureListGenerator;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Gameboard {
+public class Gameboard implements Serializable {
     private char[][] board;
     private int length;
     private int width;

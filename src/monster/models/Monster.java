@@ -2,9 +2,10 @@ package monster.models;
 
 import handlers.models.RoundingCalculator;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Monster {
+public class Monster implements Serializable {
     private int strength;
     private int mana;
     private double health;

@@ -1,9 +1,10 @@
 package game.models;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LevelProcessor {
+public class LevelProcessor implements Serializable {
     private Map<String,Integer> currentLevel = new HashMap<>()
     {{
         put("level",1);

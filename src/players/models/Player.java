@@ -6,10 +6,11 @@ import treasures.models.Spell;
 import treasures.models.Treasure;
 import treasures.models.Weapon;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Player {
+public abstract class Player implements Serializable {
     private double baseHealth = 50;
     private double basicAttack;
     private double spellAttack;

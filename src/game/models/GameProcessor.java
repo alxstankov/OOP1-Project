@@ -4,7 +4,7 @@ import events.interfaces.Event;
 import gameboard.models.Cell;
 import gameboard.models.Gameboard;
 import gameboard.models.GameboardGenerator;
-import handlers.models.ConsoleInputHandler;
+import handlers.models.InputHandler;
 import players.models.Player;
 import players.models.Person;
 import players.models.Warrior;
@@ -19,6 +19,7 @@ public class GameProcessor {
     private Cell playerLocation;
     private GameboardGenerator generator = new GameboardGenerator();
     private Player player;
+    private InputHandler handler;
     private Map<String, Supplier<Event>> gameboardControls = new HashMap<>()
     {{
         put("w",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
@@ -27,6 +28,13 @@ public class GameProcessor {
         put("d",()->gameboard.movePlayer(playerLocation.getCordX()+1,playerLocation.getCordY()));
         put("jump",()->gameboard.movePlayer(level.getWidth()-2,level.getLength()-1));
     }};
+
+    private Map<String, Runnable> miscellaneousCommands = new HashMap<>()
+    {{
+        put("see-stats",()->seePlayerStats());
+        put("help",()->help());
+    }};
+
     private LevelProcessor level = new LevelProcessor();
     private Map<String, Player> playerSelector = new HashMap<>()
     {{
@@ -36,8 +44,9 @@ public class GameProcessor {
 
     }};
 
-    public GameProcessor()
+    public GameProcessor(InputHandler handler)
     {
+        this.handler = handler;
         this.gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level);
         this.playerLocation = gameboard.getPlayerCords();
     }
@@ -46,11 +55,18 @@ public class GameProcessor {
     {
         String[] gameInput;
         Supplier<Event> gameCommand;
+        Runnable miscellaneousCommand;
         Event event;
         while (!gameboard.isMazeExit(playerLocation.getCordX(),playerLocation.getCordY())&&player.getCurrentHealth()>0)
         {
             System.out.println(gameboard.toString());
-            gameInput = ConsoleInputHandler.readContent();
+            gameInput = handler.handleCommand();
+
+            if (gameInput == null)
+            {
+                continue;
+            }
+
             if (gameInput.length != 1)
             {
                 System.out.println("No such input");
@@ -58,16 +74,25 @@ public class GameProcessor {
             }
 
             gameCommand = gameboardControls.get(gameInput[0]);
-            if(gameCommand==null)
+            if(gameCommand!=null)
             {
-                System.out.println("No such input");
+                event = gameCommand.get();
+
+                if (event != null) {
+                    event.setHandler(handler);
+                    event.startEvent(player);
+                }
                 continue;
             }
-            event = gameCommand.get();
 
-            if (event != null)
+            miscellaneousCommand = miscellaneousCommands.get(gameInput[0]);
+            if(miscellaneousCommand==null)
             {
-                event.startEvent(player);
+                System.out.println("No such input");
+            }
+            else
+            {
+                miscellaneousCommand.run();
             }
         }
     }
@@ -78,7 +103,12 @@ public class GameProcessor {
         while (player == null)
         {
             System.out.println("Please, choose a player type [ person / wizard / warrior ]:");
-            gameInput = ConsoleInputHandler.readContent();
+            gameInput = handler.handleCommand();
+
+            if (gameInput == null)
+            {
+                continue;
+            }
 
             if (gameInput.length != 1)
             {
@@ -94,6 +124,7 @@ public class GameProcessor {
             }
         }
 
+        help();
         while (level.getLevel()<=5)
         {
             System.out.println(level.toString());
@@ -114,4 +145,19 @@ public class GameProcessor {
         gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level);
         playerLocation = gameboard.getPlayerCords();
     }
+
+    private void seePlayerStats()
+    {
+        System.out.println(player.toString());
+    }
+
+    private void help()
+    {
+        String helpText = "General game commands:\n" +
+                "- w/a/s/d - Moves the player up/left/down/right\n" +
+                "- see-stats - Shows player stats\n";
+
+        System.out.println(helpText);
+    }
+
 }

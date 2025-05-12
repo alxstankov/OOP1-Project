@@ -1,7 +1,7 @@
 package events.models;
 
 import events.interfaces.Event;
-import handlers.models.ConsoleInputHandler;
+import handlers.models.InputHandler;
 import monster.models.Monster;
 import players.models.Player;
 
@@ -15,6 +15,7 @@ public class BattleEvent implements Event {
     private Monster monster;
     private double initialHealth;
     private Player player;
+    private transient InputHandler handler;
     private Map<String, Supplier<Double>> eventCommands = new HashMap<>()
     {{
         put("use-attack",()->player.getBasicAttack());
@@ -27,6 +28,10 @@ public class BattleEvent implements Event {
         this.monster = new Monster(level);
     }
 
+    public void setHandler(InputHandler handler) {
+        this.handler = handler;
+    }
+
     @Override
     public boolean startEvent(Player player) throws Exception {
         this.player = player;
@@ -34,7 +39,7 @@ public class BattleEvent implements Event {
 
         int firstMove = new Random().nextInt(2);
 
-        System.out.println("Monster encountered");
+        help();
 
         if (firstMove == 1)
         {
@@ -94,10 +99,20 @@ public class BattleEvent implements Event {
         double attack = 0;
         while (attack == 0) {
             System.out.println("Select an attack:");
-            eventInput = ConsoleInputHandler.readContent();
+            eventInput = handler.handleCommand();
+
+            if (eventInput == null) {
+                continue;
+            }
 
             if (eventInput.length != 1) {
                 System.out.println("No such input");
+                continue;
+            }
+
+            if (eventInput[0].equals("help"))
+            {
+                help();
                 continue;
             }
 
@@ -112,5 +127,21 @@ public class BattleEvent implements Event {
         }
 
         return attack;
+    }
+
+    private void help()
+    {
+        String helpText = "Battle rules:\n" +
+                "When a monster is encountered, it is randomly decided who attacks first.\n" +
+                "The battle ends when the monster or the players dies.\n" +
+                "If the player dies, the game ends.\n" +
+                "If the monster dies, the players is healed with 50% of the health points, with which it started,\n" +
+                "when the player wins with health below 50%.\n" +
+                "If the player wins with more than 50% health, he get 25% of the initial health.\n" +
+                "Commands:\n" +
+                "- use-attack - The player uses basic attack\n" +
+                "- use-spell -  The player uses spell attack \n";
+
+        System.out.println(helpText);
     }
 }

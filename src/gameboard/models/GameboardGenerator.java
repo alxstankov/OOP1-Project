@@ -1,8 +1,9 @@
 package gameboard.models;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class GameboardGenerator {
+public class GameboardGenerator implements Serializable {
     private int length;
     private int width;
     private char[][] gameboard;
