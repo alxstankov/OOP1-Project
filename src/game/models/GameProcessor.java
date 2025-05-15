@@ -3,36 +3,37 @@ package game.models;
 import events.interfaces.Event;
 import gameboard.models.Cell;
 import gameboard.models.Gameboard;
-import gameboard.models.GameboardGenerator;
 import handlers.models.InputHandler;
 import players.models.Player;
 import players.models.Person;
 import players.models.Warrior;
 import players.models.Wizard;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class GameProcessor {
+public class GameProcessor implements Serializable {
     private Gameboard gameboard;
     private Cell playerLocation;
-    private GameboardGenerator generator = new GameboardGenerator();
     private Player player;
-    private InputHandler handler;
+    private transient InputHandler handler;
+    private static final long serialVersionUID = -5058632480278207267L;
+    private Event gameEvent;
     private Map<String, Supplier<Event>> gameboardControls = new HashMap<>()
     {{
-        put("w",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
-        put("a",()->gameboard.movePlayer(playerLocation.getCordX()-1,playerLocation.getCordY()));
-        put("s",()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()+1));
-        put("d",()->gameboard.movePlayer(playerLocation.getCordX()+1,playerLocation.getCordY()));
-        put("jump",()->gameboard.movePlayer(level.getWidth()-2,level.getLength()-1));
+        put("w",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
+        put("a",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX()-1,playerLocation.getCordY()));
+        put("s",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()+1));
+        put("d",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX()+1,playerLocation.getCordY()));
+        put("jump",(Supplier<Event> & Serializable)()->gameboard.movePlayer(level.getWidth()-2,level.getLength()-1));
     }};
 
     private Map<String, Runnable> miscellaneousCommands = new HashMap<>()
     {{
-        put("see-stats",()->seePlayerStats());
-        put("help",()->help());
+        put("see-stats",(Runnable & Serializable)()->seePlayerStats());
+        put("help",(Runnable & Serializable)()->help());
     }};
 
     private LevelProcessor level = new LevelProcessor();
@@ -47,18 +48,24 @@ public class GameProcessor {
     public GameProcessor(InputHandler handler)
     {
         this.handler = handler;
-        this.gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level);
+        this.gameboard = new Gameboard(level);
         this.playerLocation = gameboard.getPlayerCords();
     }
 
     private void playLevel() throws Exception
     {
         String[] gameInput;
-        Supplier<Event> gameCommand;
-        Runnable miscellaneousCommand;
         Event event;
-        while (!gameboard.isMazeExit(playerLocation.getCordX(),playerLocation.getCordY())&&player.getCurrentHealth()>0)
+        while (!gameboard.isMazeExit(playerLocation.getCordX(),playerLocation.getCordY())&&player.getCurrentHealth()>0&&handler.isGameActive())
         {
+            if (gameEvent !=null)
+            {
+                gameEvent.setHandler(handler);
+                gameEvent.startEvent(player);
+                gameEvent = null;
+                continue;
+            }
+
             System.out.println(gameboard.toString());
             gameInput = handler.handleCommand();
 
@@ -73,19 +80,18 @@ public class GameProcessor {
                 continue;
             }
 
-            gameCommand = gameboardControls.get(gameInput[0]);
+            Supplier<Event> gameCommand = gameboardControls.get(gameInput[0]);
             if(gameCommand!=null)
             {
                 event = gameCommand.get();
 
                 if (event != null) {
-                    event.setHandler(handler);
-                    event.startEvent(player);
+                    gameEvent = event;
                 }
                 continue;
             }
 
-            miscellaneousCommand = miscellaneousCommands.get(gameInput[0]);
+            Runnable miscellaneousCommand = miscellaneousCommands.get(gameInput[0]);
             if(miscellaneousCommand==null)
             {
                 System.out.println("No such input");
@@ -125,7 +131,7 @@ public class GameProcessor {
         }
 
         help();
-        while (level.getLevel()<=5)
+        while (level.getLevel()<=5 && handler.isGameActive())
         {
             System.out.println(level.toString());
             playLevel();
@@ -136,13 +142,17 @@ public class GameProcessor {
             }
             generateNextLevel();
         }
-        System.out.println("You win!");
+
+        if (handler.isGameActive())
+        {
+            System.out.println("You win!");
+        }
     }
 
     private void generateNextLevel()
     {
         level.increaseLevel();
-        gameboard = new Gameboard(generator.generateBoard(level.getLength(), level.getWidth(), level.getMonsters(), level.getTreasures()), level);
+        gameboard = new Gameboard(level);
         playerLocation = gameboard.getPlayerCords();
     }
 
@@ -159,5 +169,10 @@ public class GameProcessor {
 
         System.out.println(helpText);
     }
+
+    public void setHandler(InputHandler handler) {
+        this.handler = handler;
+    }
+
 
 }

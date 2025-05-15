@@ -2,12 +2,13 @@ package handlers.interfaces;
 
 import game.models.GameProcessor;
 
-import java.io.IOException;
+import java.io.File;
 
 
 public interface FileHandler {
-    GameProcessor readFile(String file) throws Exception;
+    GameProcessor readFile(File file);
     void closeFile();
-    void saveFile(GameProcessor game) throws IOException;
-    void safeAsFile(String file, GameProcessor game) throws IOException;
+    void saveFile(GameProcessor game);
+    void saveAsFile(File file, GameProcessor game);
+    boolean isFileOpened();
 }

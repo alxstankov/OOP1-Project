@@ -1,19 +1,18 @@
 package gameboard.models;
 
-import java.io.Serializable;
 import java.util.*;
 
-public class GameboardGenerator implements Serializable {
-    private int length;
-    private int width;
-    private char[][] gameboard;
+public class GameboardGenerator {
+    private static int gameboardLength;
+    private static int gameboardWidth;
+    private static char[][] gameboard;
 
-    public char[][] generateBoard(int length, int width, int monsters, int treasure)
+    public static char[][] generateBoard(int length, int width, int monsters, int treasure)
     {
-        this.length = length;
-        this.width = width;
+        gameboardLength = length;
+        gameboardWidth = width;
 
-        this.gameboard = new char[this.length][this.width];
+        gameboard = new char[gameboardLength][gameboardWidth];
 
         fillCells();
 
@@ -23,11 +22,11 @@ public class GameboardGenerator implements Serializable {
 
         gameboard[0][1] = '.';
 
-        if (gameboard[this.length-2][this.width-2] == '#')
+        if (gameboard[gameboardLength -2][gameboardWidth -2] == '#')
         {
-            gameboard[this.length-2][this.width-2] = '.';
+            gameboard[gameboardLength -2][gameboardWidth -2] = '.';
         }
-        gameboard[this.length - 1][this.width - 2] = '.';
+        gameboard[gameboardLength - 1][gameboardWidth - 2] = '.';
 
         Collections.sort(visitedCells);
         Random specialCellSelector = new Random();
@@ -50,18 +49,18 @@ public class GameboardGenerator implements Serializable {
         return gameboard;
     }
 
-    private void fillCells()
+    private static void fillCells()
     {
-        for (int i=0; i<length;i++)
+        for (int i = 0; i< gameboardLength; i++)
         {
-            for (int j=0;j<width;j++)
+            for (int j = 0; j< gameboardWidth; j++)
             {
                 gameboard[i][j] ='#';
             }
         }
     }
 
-    private void generatePaths(Cell startCell,List<Cell> visitedCells)
+    private static void generatePaths(Cell startCell,List<Cell> visitedCells)
     {
         gameboard[startCell.getCordY()][startCell.getCordX()] = '.';
         visitedCells.add(startCell);
@@ -77,24 +76,24 @@ public class GameboardGenerator implements Serializable {
 
     }
 
-    public List<Cell> checkNeighbours(int x, int y){
+    private static List<Cell> checkNeighbours(int x, int y){
 
         List<Cell> neighbours = new ArrayList<>();
 
         if (x - 1 > 0) neighbours.add(new Cell(x - 1, y));
         if (y - 1 > 0) neighbours.add(new Cell(x, y - 1));
-        if (x + 1 < width - 1) neighbours.add(new Cell(x + 1, y));
-        if (y + 1 < length - 1) neighbours.add(new Cell(x, y + 1));
+        if (x + 1 < gameboardWidth - 1) neighbours.add(new Cell(x + 1, y));
+        if (y + 1 < gameboardLength - 1) neighbours.add(new Cell(x, y + 1));
         return neighbours;
 
     }
 
-    private int countPathNeighbours(int x, int y) {
+    private static int countPathNeighbours(int x, int y) {
         int count = 0;
         if (x > 0 && gameboard[y][x-1] == '.') count++;
-        if (x < width - 1 && gameboard[y][x+1] == '.') count++;
+        if (x < gameboardWidth - 1 && gameboard[y][x+1] == '.') count++;
         if (y > 0 && gameboard[y-1][x] == '.') count++;
-        if (y < length - 1 && gameboard[y+1][x] == '.') count++;
+        if (y < gameboardLength - 1 && gameboard[y+1][x] == '.') count++;
         return count;
     }
 }

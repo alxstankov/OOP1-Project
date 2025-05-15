@@ -6,6 +6,7 @@ import monster.models.Monster;
 import players.models.Player;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -18,8 +19,8 @@ public class BattleEvent implements Event {
     private transient InputHandler handler;
     private Map<String, Supplier<Double>> eventCommands = new HashMap<>()
     {{
-        put("use-attack",()->player.getBasicAttack());
-        put("use-spell",()->player.getSpellAttack());
+        put("use-attack",(Supplier<Double> & Serializable)()->player.getBasicAttack());
+        put("use-spell",(Supplier<Double> & Serializable)()->player.getSpellAttack());
 
     }};
 
@@ -33,7 +34,7 @@ public class BattleEvent implements Event {
     }
 
     @Override
-    public boolean startEvent(Player player) throws Exception {
+    public void startEvent(Player player) throws Exception {
         this.player = player;
         this.initialHealth = this.player.getCurrentHealth();
 
@@ -75,7 +76,7 @@ public class BattleEvent implements Event {
                 monster.dealDamage(selectAttack());
             }
         }
-        while(player.getCurrentHealth()>0 && monster.getHealth()>0);
+        while(player.getCurrentHealth()>0 && monster.getHealth()>0 && handler.isGameActive());
 
         if (player.getCurrentHealth()>0)
         {
@@ -90,14 +91,13 @@ public class BattleEvent implements Event {
             }
             player.updateHealth(calculatedHealth);
         }
-        return false;
     }
 
     private double selectAttack() throws IOException {
         String[] eventInput;
         Supplier<Double> eventCommand;
         double attack = 0;
-        while (attack == 0) {
+        while (attack == 0 && handler.isGameActive()) {
             System.out.println("Select an attack:");
             eventInput = handler.handleCommand();
 

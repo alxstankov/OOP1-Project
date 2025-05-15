@@ -19,11 +19,11 @@ public class TreasureEvent implements Event {
     }
 
     @Override
-    public boolean startEvent(Player player) throws Exception {
+    public void startEvent(Player player) throws Exception {
         Treasure playerTreasure = player.getTreasureItem(foundTreasure.getTreasureType());
         String[] eventInput;
 
-        eventLogic: while (true)
+        eventLogic: while (handler.isGameActive())
         {
             System.out.println("Found treasure!");
             System.out.println(foundTreasure.toString());
@@ -57,13 +57,27 @@ public class TreasureEvent implements Event {
                     break eventLogic;
                 case "n":
                     break eventLogic;
+                case "help":
+                    help();
+                    break;
                 default:
                     System.out.println("No such input");
                     break;
             }
 
         }
+    }
 
-        return false;
+    private void help()
+    {
+        String helpText = "Treasure event\n" +
+                "The player has found treasure. This can be armour, weapon, or a special spell.\n" +
+                "The player can choose if it wants to pick the particular item or to leave it.\n" +
+                "If the item is picked, the old item is replaced with the new. If the new item is left, it cannot be picked up again.\n" +
+                "Commands:\n" +
+                "- y - Picks up the found item.\n" +
+                "- n - Leaves the found item.\n" ;
+
+        System.out.println(helpText);
     }
 }

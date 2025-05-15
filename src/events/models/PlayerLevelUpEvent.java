@@ -4,6 +4,7 @@ import events.interfaces.Event;
 import handlers.models.InputHandler;
 import players.models.Player;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -14,9 +15,9 @@ public class PlayerLevelUpEvent implements Event{
     private transient InputHandler handler;
     private Map<String, Consumer<Integer>> eventControls = new HashMap<>()
     {{
-        put("health",(points) -> player.updateHealth(points));
-        put("attack",(points) -> player.updateBasicAttack(points));
-        put("spell",(points) -> player.updateSpellAttack(points));
+        put("health",(Consumer<Integer> & Serializable)(points) -> player.updateHealth(points));
+        put("attack",(Consumer<Integer> & Serializable)(points) -> player.updateBasicAttack(points));
+        put("spell",(Consumer<Integer> & Serializable)(points) -> player.updateSpellAttack(points));
     }};
 
 
@@ -25,14 +26,14 @@ public class PlayerLevelUpEvent implements Event{
     }
 
     @Override
-    public boolean startEvent(Player player) throws Exception {
+    public void startEvent(Player player) throws Exception {
         this.player = player;
 
         Consumer<Integer> eventCommand;
         String[] eventInput;
         int inputPoints;
 
-        while (levelUpPoints>0)
+        while (levelUpPoints>0 && handler.isGameActive())
         {
             System.out.println(player);
             System.out.println("Remaining amount of points: "+levelUpPoints);
@@ -44,7 +45,12 @@ public class PlayerLevelUpEvent implements Event{
                 continue;
             }
 
-            if (eventInput.length != 2)
+            if (eventInput.length == 1 && eventInput[0].equals("help"))
+            {
+                help();
+                continue;
+            }
+            else if (eventInput.length != 2)
             {
                 System.out.println("No such input");
                 continue;
@@ -83,6 +89,18 @@ public class PlayerLevelUpEvent implements Event{
             eventCommand.accept(inputPoints);
             levelUpPoints -= inputPoints;
         }
-        return true;
+    }
+
+    private void help()
+    {
+        String helpText = "Player level up event\n" +
+                "This event allows for leveling up the stats of a player.\n" +
+                "At the end of the level, the player has 30 points, which can be distributed between health / attack / spell.\n" +
+                "Commands:\n" +
+                "- health <points> - Levels up health with the given amount of <points>\n" +
+                "- attack <points> - Levels up attack with the given amount of <points>\n" +
+                "- spell <points> - Levels up spell with the given amount of <points>\n";
+
+        System.out.println(helpText);
     }
 }

@@ -19,11 +19,11 @@ public class Gameboard implements Serializable {
     private Cell playerCords = new Cell(1,0);
     private List<Treasure> treasureList;
 
-    public Gameboard(char[][] board, LevelProcessor level)
+    public Gameboard(LevelProcessor level)
     {
-        this.board = board;
         this.length = level.getLength();
         this.width = level.getWidth();
+        this.board = GameboardGenerator.generateBoard(length,width,level.getMonsters(),level.getTreasures());
         this.level = level.getLevel();
         this.treasureList = TreasureListGenerator.generateTreasureList(level.getTreasures(), level.getLevel());
         this.board[playerCords.getCordY()][playerCords.getCordX()] = 'P';
