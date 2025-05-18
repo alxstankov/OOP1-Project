@@ -1,6 +1,7 @@
 package handlers.models;
 
 import game.models.GameProcessor;
+import game.models.RandomLevelGenerator;
 import handlers.interfaces.FileHandler;
 
 import java.io.BufferedReader;
@@ -16,18 +17,21 @@ public class InputHandler {
 
     private FileHandler fileHandler;
     private boolean isProgramActive = true;
+    private boolean administrativeMode = false;
 
     private Map<String, Consumer<String>> parameterizedCommands = new HashMap<>() {{
         put("open", (fileLocation) -> open(fileLocation));
         put("save-as", (fileLocation) -> saveAs(fileLocation));
+        put("new-game",(gamemode)->newGame(gamemode));
+
     }};
 
     private Map<String,Runnable> nonParameterizedCommands = new HashMap<>(){{
         put("close", () -> close());
         put("save", () -> save());
         put("exit",() -> exit());
-        put("new-game",()->newGame());
         put("help",()-> help());
+        put("set-mode",()->setAdministrativeMode());
     }};
 
     private GameProcessor game;
@@ -127,6 +131,23 @@ public class InputHandler {
         }
     }
 
+    private void setAdministrativeMode(){
+        if (fileHandler.isFileOpened())
+        {
+            administrativeMode  = !administrativeMode;
+
+            System.out.println("Administrative mode set to "+administrativeMode);
+        }
+        else
+        {
+            System.out.println("You need to open a file!");
+        }
+    }
+
+    public boolean isAdministrativeMode() {
+        return administrativeMode;
+    }
+
     private void open(String fileLocation) {
         File file = new File(fileLocation);
         this.game = fileHandler.readFile(file);
@@ -137,11 +158,41 @@ public class InputHandler {
         }
     }
 
-    private void newGame()
+    private void newGame(String mode)
     {
         if (fileHandler.isFileOpened())
         {
-            this.game = new GameProcessor(this);
+            if (administrativeMode)
+            {
+                if (mode.equals("custom"))
+                {
+                    this.game = new GameProcessor(this, RandomLevelGenerator.generateLevel());
+                }
+                else if (mode.equals("classic")) {
+                    this.game = new GameProcessor(this);
+                }
+                else
+                {
+                    System.out.println("The given game mode is not recognized");
+                    return;
+                }
+            }
+            else
+            {
+                if (mode.equals("custom"))
+                {
+                    System.out.println("Administrative mode is not set!");
+                    return;
+                }
+                else if (mode.equals("classic")) {
+                    this.game = new GameProcessor(this);
+                }
+                else
+                {
+                    System.out.println("The given game mode is not recognized");
+                    return;
+                }
+            }
             System.out.println("Started new game");
         }
         else
@@ -178,14 +229,16 @@ public class InputHandler {
 
     private void help()
     {
+        String administrativeGameMode = administrativeMode ? "/ custom " : "";
         String helpText = "The following commands are supported:\n" +
-                "- open <file> - opens <file>\n" +
-                "- close - closes currently opened file\n" +
-                "- save - saves the currently opened file\n" +
-                "- save-as <file> - saves the currently opened file in <file>\n" +
-                "- new-game - starts a new game\n" +
-                "- help - prints this information\n" +
-                "- exit - exits the program\n";
+                "- open <file> - Opens <file>\n" +
+                "- close - Closes currently opened file\n" +
+                "- save - Saves the currently opened file\n" +
+                "- save-as <file> - Saves the currently opened file in <file>\n" +
+                "- new-game [ classic "+administrativeGameMode+"] - Starts a new game\n" +
+                "- set-mode - Switches between normal and administrative mode\n" +
+                "- help - Prints this information\n" +
+                "- exit - Exits the program\n";
         System.out.println(helpText);
     }
 }

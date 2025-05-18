@@ -1,6 +1,7 @@
 package game.models;
 
 import events.interfaces.Event;
+import events.models.PlayerLevelUpEvent;
 import gameboard.models.Cell;
 import gameboard.models.Gameboard;
 import handlers.models.InputHandler;
@@ -9,6 +10,7 @@ import players.models.Person;
 import players.models.Warrior;
 import players.models.Wizard;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,16 +20,20 @@ public class GameProcessor implements Serializable {
     private Gameboard gameboard;
     private Cell playerLocation;
     private Player player;
-    private transient InputHandler handler;
-    private static final long serialVersionUID = -5058632480278207267L;
     private Event gameEvent;
+    private LevelProcessor level;
+    private boolean isCustom;
+    private transient InputHandler handler;
+    @Serial
+    private static final long serialVersionUID = -5058632480278207267L;
+
     private Map<String, Supplier<Event>> gameboardControls = new HashMap<>()
     {{
         put("w",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
         put("a",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX()-1,playerLocation.getCordY()));
         put("s",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()+1));
         put("d",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX()+1,playerLocation.getCordY()));
-        put("jump",(Supplier<Event> & Serializable)()->gameboard.movePlayer(level.getWidth()-2,level.getLength()-1));
+        put("jump",(Supplier<Event> & Serializable)()->jump());
     }};
 
     private Map<String, Runnable> miscellaneousCommands = new HashMap<>()
@@ -36,7 +42,7 @@ public class GameProcessor implements Serializable {
         put("help",(Runnable & Serializable)()->help());
     }};
 
-    private LevelProcessor level = new LevelProcessor();
+
     private Map<String, Player> playerSelector = new HashMap<>()
     {{
         put("person",new Person());
@@ -48,8 +54,19 @@ public class GameProcessor implements Serializable {
     public GameProcessor(InputHandler handler)
     {
         this.handler = handler;
+        this.level = new LevelProcessor();
         this.gameboard = new Gameboard(level);
         this.playerLocation = gameboard.getPlayerCords();
+        this.isCustom = false;
+    }
+
+    public GameProcessor(InputHandler handler, LevelProcessor level)
+    {
+        this.handler = handler;
+        this.level = level;
+        this.gameboard = new Gameboard(this.level);
+        this.playerLocation = gameboard.getPlayerCords();
+        this.isCustom = true;
     }
 
     private void playLevel() throws Exception
@@ -86,6 +103,10 @@ public class GameProcessor implements Serializable {
                 event = gameCommand.get();
 
                 if (event != null) {
+                    if (isCustom && event instanceof PlayerLevelUpEvent)
+                    {
+                        continue;
+                    }
                     gameEvent = event;
                 }
                 continue;
@@ -106,7 +127,7 @@ public class GameProcessor implements Serializable {
     public void startGame() throws Exception {
         String[] gameInput;
 
-        while (player == null)
+        while (player == null && handler.isGameActive())
         {
             System.out.println("Please, choose a player type [ person / wizard / warrior ]:");
             gameInput = handler.handleCommand();
@@ -130,17 +151,37 @@ public class GameProcessor implements Serializable {
             }
         }
 
-        help();
-        while (level.getLevel()<=5 && handler.isGameActive())
+        if (handler.isGameActive())
         {
-            System.out.println(level.toString());
-            playLevel();
-            if (player.getCurrentHealth()<=0)
+            help();
+        }
+
+        if (isCustom)
+        {
+            if (handler.isGameActive())
             {
-                System.out.println("Player died. Game over");
-                return;
+                System.out.println(level.toString());
+                playLevel();
+                if (player.getCurrentHealth()<=0)
+                {
+                    System.out.println("Player died. Game over");
+                    return;
+                }
             }
-            generateNextLevel();
+        }
+        else
+        {
+            while (level.getLevel()<=5 && handler.isGameActive())
+            {
+                System.out.println(level.toString());
+                playLevel();
+                if (player.getCurrentHealth()<=0)
+                {
+                    System.out.println("Player died. Game over");
+                    return;
+                }
+                generateNextLevel();
+            }
         }
 
         if (handler.isGameActive())
@@ -167,7 +208,26 @@ public class GameProcessor implements Serializable {
                 "- w/a/s/d - Moves the player up/left/down/right\n" +
                 "- see-stats - Shows player stats\n";
 
+        if (handler.isAdministrativeMode())
+        {
+            helpText += "- jump - Moves the player to the end of the maze\n";
+        }
+
         System.out.println(helpText);
+    }
+
+    private Event jump()
+    {
+        Event event = null;
+        if (handler.isAdministrativeMode())
+        {
+            event =  gameboard.movePlayer(level.getWidth()-2,level.getLength()-1);
+        }
+        else
+        {
+            System.out.println("Administrative mode is not set!");
+        }
+         return event;
     }
 
     public void setHandler(InputHandler handler) {

@@ -5,16 +5,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LevelProcessor implements Serializable {
-    private Map<String,Integer> currentLevel = new HashMap<>()
-    {{
-        put("level",1);
-        put("length",10);
-        put("width",10);
-        put("monsters",2);
-        put("treasures",2);
-    }};
+    private Map<String,Integer> currentLevel;
 
     private Map<String,Integer> previousLevel;
+
+    public LevelProcessor (int level,int length, int width, int monsters, int treasures)
+    {
+        this.currentLevel = new HashMap<>()
+        {{
+            put("level",level);
+            put("length",length);
+            put("width",width);
+            put("monsters",monsters);
+            put("treasures",treasures);
+        }};
+    }
+
+    public LevelProcessor ()
+    {
+        this.currentLevel = new HashMap<>()
+        {{
+            put("level",1);
+            put("length",10);
+            put("width",10);
+            put("monsters",2);
+            put("treasures",2);
+        }};
+    }
 
     public int getLength() {
         return currentLevel.get("length");
