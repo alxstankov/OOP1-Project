@@ -18,6 +18,9 @@ public class Cell implements Comparable<Cell>, Serializable {
 
     /**
      * Constructs a {@code Code} instance with X and Y coordinates.
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
      */
     public Cell(int x, int y)
     {

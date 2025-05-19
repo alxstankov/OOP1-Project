@@ -40,6 +40,9 @@ public abstract class Player implements Serializable {
     /**
      * Sets a base constructor for the player types.
      * The {@code Player} class is abstract, so it cannot create instances.
+     *
+     * @param basicAttack Basic attack stat
+     * @param spellAttack Spell attack stat
      */
     public Player(int basicAttack, int spellAttack)
     {

@@ -20,6 +20,9 @@ public abstract class Treasure implements Serializable {
     /**
      * Sets a base constructor for the treasure types.
      * The {@code Treasure} class is abstract, so it cannot create instances.
+     *
+     * @param type Treasure type of the treasure
+     * @param stat Stat of the treasure
      */
     public Treasure(TreasureType type, double stat)
     {

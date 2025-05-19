@@ -30,6 +30,7 @@ public class GameboardGenerator {
      *  @param width Width of game board
      *  @param monsters Number of monsters on the game board
      *  @param treasures Number of treasures on the game board
+     *  @return Char matrix of the game board
      */
     public static char[][] generateBoard(int length, int width, int monsters, int treasures)
     {
