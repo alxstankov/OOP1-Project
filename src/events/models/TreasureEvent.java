@@ -5,10 +5,25 @@ import handlers.models.InputHandler;
 import players.models.Player;
 import treasures.models.Treasure;
 
+/**
+ * The {@code TreasureEvent} class implements the {@link events.interfaces.Event} interface.
+ * This class is responsible for carrying out the event for acquiring a new item during gameplay.
+ */
 public class TreasureEvent implements Event {
+    /**
+     * The found treasure, that the player can decide if it wants to pick up.
+     */
     private Treasure foundTreasure;
+    /**
+     * The input handler, that is going to be used for reading user input and checking program and game running status.
+     */
     private transient InputHandler handler;
 
+    /**
+     * Constructs a {@code TreasureEvent} instance with the given found treasure, that the player can decide if it wants to pick up.
+     *
+     * @param treasure Instance of the found treasure
+     */
     public TreasureEvent(Treasure treasure)
     {
         this.foundTreasure = treasure;
@@ -18,6 +33,15 @@ public class TreasureEvent implements Event {
         this.handler = handler;
     }
 
+    /**
+     * This is an implementation of the {@link events.interfaces.Event#startEvent(Player)} method.
+     * This event gives the player the option to acquire the treasure, found on the game board.
+     * If the player decides to pick up the treasure, the new item will replace the old treasure of the same type.
+     * If the player decides to leave the treasure, the new item is flushed and cannot be found again.
+     *
+     * @param player The player who found the treasure.
+     * @throws Exception Exceptions that happen during the event
+     */
     @Override
     public void startEvent(Player player) throws Exception {
         Treasure playerTreasure = player.getTreasureItem(foundTreasure.getTreasureType());
@@ -68,6 +92,9 @@ public class TreasureEvent implements Event {
         }
     }
 
+    /**
+     * Shows all supported event commands on the system's default output stream.
+     */
     private void help()
     {
         String helpText = "Treasure event\n" +

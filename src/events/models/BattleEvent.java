@@ -12,11 +12,32 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Supplier;
 
+/**
+ * The {@code BattleEvent} class implements the {@link events.interfaces.Event} interface.
+ * This class is responsible for carrying out the battles during gameplay.
+ */
 public class BattleEvent implements Event {
+    /**
+     * The monster that the users battles.
+     */
     private Monster monster;
+    /**
+     * The health points, with which the player enters the battle.
+     */
     private double initialHealth;
+    /**
+     * The player that has encountered the monster.
+     */
     private Player player;
+    /**
+     * The input handler, that is going to be used for reading user input and checking program and game running status.
+     */
     private transient InputHandler handler;
+    /**
+     * Holds the commands that are specific for this event.
+     * The key represent the name of the command.
+     * The values are the commands for the player attacks, that will be executed, when being called.
+     */
     private Map<String, Supplier<Double>> eventCommands = new HashMap<>()
     {{
         put("use-attack",(Supplier<Double> & Serializable)()->player.getBasicAttack());
@@ -24,15 +45,35 @@ public class BattleEvent implements Event {
 
     }};
 
+    /**
+     * Constructs a {@code BattleEvent} instance with the given level difficulty, that decides the stats of the encountered monster.
+     *
+     * @param level Numerical representation of the difficulty level
+     */
     public BattleEvent(int level)
     {
         this.monster = new Monster(level);
     }
 
+
     public void setHandler(InputHandler handler) {
         this.handler = handler;
     }
 
+    /**
+     * This is an implementation of the {@link events.interfaces.Event#startEvent(Player)} method.
+     * The method starts the event by deciding who attacks first.
+     * Both the player and the monster take turns to attack.
+     * The event ends, when one of them dies.
+     *
+     * If the player dies. The game is over.
+     * If the player survives, it heals a certain percentage of the health, depending on the health after the battle.
+     * The player heals 50% of the initial health if is under 50% of the current health.
+     * If the current health is above the half mark, the player heals 25% of the initial health.
+     *
+     * @param player The player that has encountered the monster
+     * @throws Exception Exceptions that happen during the event.
+     */
     @Override
     public void startEvent(Player player) throws Exception {
         this.player = player;
@@ -92,7 +133,13 @@ public class BattleEvent implements Event {
             player.updateHealth(calculatedHealth);
         }
     }
-
+    /**
+     * Handles all the commands of the event.
+     * If an event command is detected, the result of the attack will be returned.
+     *
+     * @return The attack points, that will be dealt to the monster
+     * @throws IOException If an error occurs with reading the user input
+     */
     private double selectAttack() throws IOException {
         String[] eventInput;
         Supplier<Double> eventCommand;
@@ -129,6 +176,9 @@ public class BattleEvent implements Event {
         return attack;
     }
 
+    /**
+     * Shows all supported event commands on the system's default output stream.
+     */
     private void help()
     {
         String helpText = "Battle rules:\n" +

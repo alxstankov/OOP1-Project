@@ -9,10 +9,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * The {@code PlayerLevelUpEvent} class implements the {@link events.interfaces.Event} interface.
+ * This class is responsible for carrying out the leveling up of the player during gameplay.
+ */
 public class PlayerLevelUpEvent implements Event{
+    /**
+     * The current amount of points left for the user to use for leveling up.
+     */
     private int levelUpPoints = 30;
+    /**
+     * The player that is going to be leveled up.
+     */
     private Player player;
+    /**
+     * The input handler, that is going to be used for reading user input and checking program and game running status.
+     */
     private transient InputHandler handler;
+    /**
+     * Holds the commands that are specific for this event.
+     * The key represent the name of the command.
+     * The values are the commands for leveling the specified stat, that will be executed, when being called.
+     */
     private Map<String, Consumer<Integer>> eventControls = new HashMap<>()
     {{
         put("health",(Consumer<Integer> & Serializable)(points) -> player.updateHealth(points));
@@ -25,6 +43,14 @@ public class PlayerLevelUpEvent implements Event{
         this.handler = handler;
     }
 
+    /**
+     * This is an implementation of the {@link events.interfaces.Event#startEvent(Player)} method.
+     * This event levels up the player, who has reached the end of the level.
+     * The player has 30 points to level up his stats.
+     *
+     * @param player The player that is going to be leveled up
+     * @throws Exception Exceptions that happen during the event
+     */
     @Override
     public void startEvent(Player player) throws Exception {
         this.player = player;
@@ -90,7 +116,9 @@ public class PlayerLevelUpEvent implements Event{
             levelUpPoints -= inputPoints;
         }
     }
-
+    /**
+     * Shows all supported event commands on the system's default output stream.
+     */
     private void help()
     {
         String helpText = "Player level up event\n" +

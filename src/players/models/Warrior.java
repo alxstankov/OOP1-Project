@@ -1,6 +1,12 @@
 package players.models;
 
+/**
+ * The {@code Warrior} is a child of {@link players.models.Player} model. Extends to set stats for the Person type.
+ */
 public class Warrior extends Player {
+    /**
+     * Constructs a {@code Warrior} instance with the corresponding stats.
+     */
     public Warrior() {
         super(40,10);
     }

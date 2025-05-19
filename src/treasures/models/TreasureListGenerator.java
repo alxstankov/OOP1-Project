@@ -6,7 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * The {@code TreasureListGenerator} class implements the static function for generating treasure, corresponding to level needs.
+ */
 public class TreasureListGenerator {
+    /**
+     * This method randomly generates a list of treasures, with random stats, depending on the level multiplier.
+     *
+     * @param numberOfItems Number of items that need to be generated
+     * @param levelMultiplier Numerical representation of the  level multiplier, that is used for calculating treasure's stat
+     * @return List of randomly generated treasures
+     */
     public static List<Treasure> generateTreasureList(int numberOfItems, int levelMultiplier)
     {
         List<Treasure> treasureList = new ArrayList<>();

@@ -15,18 +15,49 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-
+/**
+ * The {@code GameProcessor} class is responsible for playing out the game logic.
+ */
 public class GameProcessor implements Serializable {
+    /**
+     * The game board of the current level.
+     */
     private Gameboard gameboard;
+    /**
+     * The current player location of the player.
+     */
     private Cell playerLocation;
+    /**
+     * Instance of the player.
+     */
     private Player player;
+    /**
+     * Current game event.
+    */
     private Event gameEvent;
-    private LevelProcessor level;
+    /**
+     * {@link Level} instance that is tracking level progression.
+     */
+    private Level level;
+    /**
+     * Shows if the game is a custom or classic.
+     */
     private boolean isCustom;
+    /**
+     * The input handler, that is going to be used for reading user input and checking program and game running status.
+     */
     private transient InputHandler handler;
+    /**
+     * Serial version unique ID for comparing {@code GameProcessor} versions.
+     */
     @Serial
     private static final long serialVersionUID = -5058632480278207267L;
 
+    /**
+     * Holds the commands that are specific for the game.
+     * The key represent the name of the command.
+     * The values are the commands for handling player movement, that will be executed, when being called.
+     */
     private Map<String, Supplier<Event>> gameboardControls = new HashMap<>()
     {{
         put("w",(Supplier<Event> & Serializable)()->gameboard.movePlayer(playerLocation.getCordX(),playerLocation.getCordY()-1));
@@ -36,13 +67,22 @@ public class GameProcessor implements Serializable {
         put("jump",(Supplier<Event> & Serializable)()->jump());
     }};
 
+    /**
+     * Holds the commands that are specific for the game.
+     * The key represent the name of the command.
+     * The values are the miscellaneous commands, that will be executed, when being called.
+     */
     private Map<String, Runnable> miscellaneousCommands = new HashMap<>()
     {{
         put("see-stats",(Runnable & Serializable)()->seePlayerStats());
         put("help",(Runnable & Serializable)()->help());
     }};
 
-
+    /**
+     * Holds the different player types.
+     * The key represent the player type.
+     * The values are the constructors that create the different player types.
+     */
     private Map<String, Player> playerSelector = new HashMap<>()
     {{
         put("person",new Person());
@@ -51,16 +91,27 @@ public class GameProcessor implements Serializable {
 
     }};
 
+    /**
+     * Constructs a {@code GameProcessor} instance for a classic game.
+     *
+     * @param handler The input handler, that is going to be used for reading user input and checking program and game running status
+     */
     public GameProcessor(InputHandler handler)
     {
         this.handler = handler;
-        this.level = new LevelProcessor();
+        this.level = new Level();
         this.gameboard = new Gameboard(level);
         this.playerLocation = gameboard.getPlayerCords();
         this.isCustom = false;
     }
 
-    public GameProcessor(InputHandler handler, LevelProcessor level)
+    /**
+     * Constructs a {@code GameProcessor} instance for a custom game.
+     *
+     * @param handler The input handler, that is going to be used for reading user input and checking program and game running status
+     * @param level Custom level instance
+     */
+    public GameProcessor(InputHandler handler, Level level)
     {
         this.handler = handler;
         this.level = level;
@@ -68,7 +119,13 @@ public class GameProcessor implements Serializable {
         this.playerLocation = gameboard.getPlayerCords();
         this.isCustom = true;
     }
-
+    /**
+     * This method is the main game loop for playing a level that detects game commands and carries them out.
+     * The loop is active while 3 conditions are met: The player has not reached the end of the game board, the player is alive, the game is active.
+     * If an event is encountered, the method starts the event.
+     *
+     * @throws Exception If an error occurs while carrying out the game level logic
+     */
     private void playLevel() throws Exception
     {
         String[] gameInput;
@@ -103,7 +160,7 @@ public class GameProcessor implements Serializable {
                 event = gameCommand.get();
 
                 if (event != null) {
-                    if (isCustom && event instanceof PlayerLevelUpEvent)
+                    if ((isCustom || level.getLevel()==5) && event instanceof PlayerLevelUpEvent)
                     {
                         continue;
                     }
@@ -123,7 +180,13 @@ public class GameProcessor implements Serializable {
             }
         }
     }
-
+    /**
+     * This method starts the game logic.
+     * The main responsibilities of the method are to set the player type and carry the level progression.
+     * If the game is custom, only one level will be played. A classic game will play up to 5 levels.
+     *
+     * @throws Exception If an error occurs while carrying out the game level logic
+     */
     public void startGame() throws Exception {
         String[] gameInput;
 
@@ -180,7 +243,10 @@ public class GameProcessor implements Serializable {
                     System.out.println("Player died. Game over");
                     return;
                 }
-                generateNextLevel();
+                if (level.getLevel()<5)
+                {
+                    generateNextLevel();
+                }
             }
         }
 
@@ -190,6 +256,9 @@ public class GameProcessor implements Serializable {
         }
     }
 
+    /**
+     * Increases the level parameters. Creates a new game board and sets new player location.
+     */
     private void generateNextLevel()
     {
         level.increaseLevel();
@@ -197,11 +266,17 @@ public class GameProcessor implements Serializable {
         playerLocation = gameboard.getPlayerCords();
     }
 
+    /**
+     * Shows current player stats on the system's default output stream.
+     */
     private void seePlayerStats()
     {
         System.out.println(player.toString());
     }
 
+    /**
+     * Shows all supported game commands on the system's default output stream.
+     */
     private void help()
     {
         String helpText = "General game commands:\n" +
@@ -215,7 +290,12 @@ public class GameProcessor implements Serializable {
 
         System.out.println(helpText);
     }
-
+    /**
+     * Moves the player to the exit of the current game board.
+     * The command is only accessible in administrative mode.
+     *
+     * @return Event, appropriate for the player position on the game board
+     */
     private Event jump()
     {
         Event event = null;
@@ -230,6 +310,11 @@ public class GameProcessor implements Serializable {
          return event;
     }
 
+    /**
+     * Sets the handler, that will be used for reading user input.
+     *
+     * @param handler Input handler, used for user input and checking program and game running status
+     */
     public void setHandler(InputHandler handler) {
         this.handler = handler;
     }

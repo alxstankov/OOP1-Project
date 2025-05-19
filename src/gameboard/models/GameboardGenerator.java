@@ -1,13 +1,37 @@
 package gameboard.models;
 
 import java.util.*;
-
+/**
+ *  The {@code GameboardGenerator} class is responsible generating game boards.
+ */
 public class GameboardGenerator {
+    /**
+     * Length of the game board.
+     */
     private static int gameboardLength;
+    /**
+     * Width of the game board.
+     */
     private static int gameboardWidth;
+    /**
+     * Char representation of the game board.
+     */
     private static char[][] gameboard;
 
-    public static char[][] generateBoard(int length, int width, int monsters, int treasure)
+    /**
+     * List of visited cells during game board generation.
+     */
+    private static List<Cell> visitedCells;
+
+    /**
+     * Generates a char matrix game board with the given parameters.
+     *
+     *  @param length Length of game board
+     *  @param width Width of game board
+     *  @param monsters Number of monsters on the game board
+     *  @param treasures Number of treasures on the game board
+     */
+    public static char[][] generateBoard(int length, int width, int monsters, int treasures)
     {
         gameboardLength = length;
         gameboardWidth = width;
@@ -16,9 +40,9 @@ public class GameboardGenerator {
 
         fillCells();
 
-        List<Cell> visitedCells = new ArrayList<>();
+        visitedCells = new ArrayList<>();
 
-        generatePaths(new Cell(1,1),visitedCells);
+        generatePaths(new Cell(1,1));
 
         gameboard[0][1] = '.';
 
@@ -39,7 +63,7 @@ public class GameboardGenerator {
             visitedCells.remove(dragonCell);
         }
 
-        for (int i = 0; i < treasure; i++) {
+        for (int i = 0; i < treasures; i++) {
             int treasureCellIndex = specialCellSelector.nextInt(visitedCells.size()-1);
             Cell treasureCell = visitedCells.get(treasureCellIndex);
             gameboard[treasureCell.getCordY()][treasureCell.getCordX()] = 'T';
@@ -49,6 +73,9 @@ public class GameboardGenerator {
         return gameboard;
     }
 
+    /**
+     * Fills all the cells of the newly created game board with the wall character.
+     */
     private static void fillCells()
     {
         for (int i = 0; i< gameboardLength; i++)
@@ -60,7 +87,13 @@ public class GameboardGenerator {
         }
     }
 
-    private static void generatePaths(Cell startCell,List<Cell> visitedCells)
+    /**
+     * Using recursive method, the method generate random paths,that the player can move on.
+     * This method calls itself, until there are no unvisited cells with less than 2 neighbouring cells with movable paths.
+     *
+     * @param startCell The cell from witch the path generation starts
+     */
+    private static void generatePaths(Cell startCell)
     {
         gameboard[startCell.getCordY()][startCell.getCordX()] = '.';
         visitedCells.add(startCell);
@@ -69,13 +102,21 @@ public class GameboardGenerator {
 
         Collections.shuffle(neighbours);
         for (Cell neighbour : neighbours) {
-            if (!visitedCells.contains(neighbour) && countPathNeighbours(neighbour.getCordX(),neighbour.getCordY())<=1) {
-                generatePaths(neighbour,visitedCells);
+            if (!visitedCells.contains(neighbour) && countPathNeighbours(neighbour.getCordX(),neighbour.getCordY())<2) {
+                generatePaths(neighbour);
             }
         }
 
     }
 
+    /**
+     * Checks all neighbouring cells, that are not out of bounds
+     *
+     * @param x X coordinates of the cell for which we are looking around for other cells
+     * @param y Y coordinates of the cell for which we are looking around for other cells
+     *
+     * @return List of all neighbouring cells, that are in bounds of the game board
+     */
     private static List<Cell> checkNeighbours(int x, int y){
 
         List<Cell> neighbours = new ArrayList<>();
@@ -87,7 +128,14 @@ public class GameboardGenerator {
         return neighbours;
 
     }
-
+    /**
+     * Counts how many neighbouring cells are marked as movable.
+     *
+     * @param x X coordinates of the cell for which we are looking around for other cells
+     * @param y Y coordinates of the cell for which we are looking around for other cells
+     *
+     * @return Number of neighbouring cells are marked as movable
+     */
     private static int countPathNeighbours(int x, int y) {
         int count = 0;
         if (x > 0 && gameboard[y][x-1] == '.') count++;
