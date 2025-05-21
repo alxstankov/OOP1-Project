@@ -44,6 +44,7 @@ public class InputHandler {
         put("open", (fileLocation) -> open(fileLocation));
         put("save-as", (fileLocation) -> saveAs(fileLocation));
         put("new-game",(gamemode)->newGame(gamemode));
+        put("new-file",(fileLocation)->fileHandler.newFile(new File(fileLocation)));
 
     }};
     /**
@@ -64,6 +65,13 @@ public class InputHandler {
      * Starting a new game or reading a save file, sets a game instance to the field, that can be later played.
      */
     private GameProcessor game;
+
+    /**
+     * A newly loaded instance of the game.
+     *
+     * If a game is already active, when the new game instance is created, the game will be temporarily stored here.
+     */
+    private GameProcessor newlyLoadedGame;
 
     /**
      * Constructs a {@code InputHandler} instance with the given instance of a file handler.
@@ -88,6 +96,12 @@ public class InputHandler {
         {
             if (game == null)
             {
+                if (newlyLoadedGame != null)
+                {
+                    this.game = newlyLoadedGame;
+                    this.newlyLoadedGame = null;
+                    continue;
+                }
                 handleCommand();
             }
             else
@@ -163,7 +177,6 @@ public class InputHandler {
         {
             System.out.println("You need to open a file!");
         }
-
 
     }
 
@@ -241,10 +254,27 @@ public class InputHandler {
             {
                 if (mode.equals("custom"))
                 {
-                    this.game = new GameProcessor(this, RandomLevelGenerator.generateLevel());
+                    if (game !=null)
+                    {
+                        this.newlyLoadedGame = new GameProcessor(this, RandomLevelGenerator.generateLevel());
+                        this.game = null;
+                    }
+                    else
+                    {
+                        this.game = new GameProcessor(this, RandomLevelGenerator.generateLevel());
+                    }
                 }
                 else if (mode.equals("classic")) {
-                    this.game = new GameProcessor(this);
+                    if (game !=null)
+                    {
+                        this.newlyLoadedGame = new GameProcessor(this);
+                        this.game = null;
+                    }
+                    else
+                    {
+                        this.game = new GameProcessor(this);
+
+                    }
                 }
                 else
                 {
@@ -260,7 +290,16 @@ public class InputHandler {
                     return;
                 }
                 else if (mode.equals("classic")) {
-                    this.game = new GameProcessor(this);
+                    if (game !=null)
+                    {
+                        this.newlyLoadedGame = new GameProcessor(this);
+                        this.game = null;
+                    }
+                    else
+                    {
+                        this.game = new GameProcessor(this);
+
+                    }
                 }
                 else
                 {
@@ -320,6 +359,7 @@ public class InputHandler {
         String administrativeGameMode = administrativeMode ? "/ custom " : "";
         String helpText = "The following commands are supported:\n" +
                 "- open <file> - Opens <file>\n" +
+                "- new-file <file> - Creates new <file>\n" +
                 "- close - Closes currently opened file\n" +
                 "- save - Saves the currently opened file\n" +
                 "- save-as <file> - Saves the currently opened file in <file>\n" +

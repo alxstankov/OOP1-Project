@@ -34,24 +34,24 @@ public class GameboardGenerator {
      */
     public static char[][] generateBoard(int length, int width, int monsters, int treasures)
     {
+        boolean isExitReachable = false;
         gameboardLength = length;
         gameboardWidth = width;
 
         gameboard = new char[gameboardLength][gameboardWidth];
 
-        fillCells();
-
-        visitedCells = new ArrayList<>();
-
-        generatePaths(new Cell(1,1));
-
-        gameboard[0][1] = '.';
-
-        if (gameboard[gameboardLength -2][gameboardWidth -2] == '#')
+        while (!isExitReachable)
         {
-            gameboard[gameboardLength -2][gameboardWidth -2] = '.';
+            fillCells();
+
+            visitedCells = new ArrayList<>();
+
+            generatePaths(new Cell(1,1));
+
+            gameboard[0][1] = '.';
+            gameboard[gameboardLength - 1][gameboardWidth - 2] = '.';
+            isExitReachable = isExitReachable();
         }
-        gameboard[gameboardLength - 1][gameboardWidth - 2] = '.';
 
         Collections.sort(visitedCells);
         Random specialCellSelector = new Random();
@@ -145,4 +145,53 @@ public class GameboardGenerator {
         if (y < gameboardLength - 1 && gameboard[y+1][x] == '.') count++;
         return count;
     }
+
+    /**
+     * Checks if the newly created game board has the exit reachable.
+     * This method helps ensure that the generated game boards have a reachable exit.
+     * @return Boolean that represents if the exit of the game board is reachable
+     */
+    private static boolean isExitReachable() {
+        boolean[][] visited = new boolean[gameboardLength][gameboardWidth];
+        Queue<Cell> queue = new LinkedList<>();
+        queue.add(new Cell(1, 1));
+        visited[1][1] = true;
+
+        while (!queue.isEmpty()) {
+            Cell current = queue.poll();
+            int x = current.getCordX();
+            int y = current.getCordY();
+
+            if (x == gameboardWidth - 2 && y == gameboardLength - 1) {
+                return true;
+            }
+
+            for (Cell neighbor : getValidPathNeighbours(x, y)) {
+                int nx = neighbor.getCordX();
+                int ny = neighbor.getCordY();
+                if (!visited[ny][nx]) {
+                    visited[ny][nx] = true;
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the coordinates of all the neighbours that are movable for the player.
+     * @param x X coordinates of the current cell, for whose neighbors we are checking
+     * @param y Y coordinates of the current cell, for whose neighbors we are checking
+     * @return List of all the moveable neighbour cells
+     */
+    private static List<Cell> getValidPathNeighbours(int x, int y) {
+        List<Cell> neighbours = new ArrayList<>();
+        if (x > 0 && gameboard[y][x - 1] == '.') neighbours.add(new Cell(x - 1, y));
+        if (x < gameboardWidth - 1 && gameboard[y][x + 1] == '.') neighbours.add(new Cell(x + 1, y));
+        if (y > 0 && gameboard[y - 1][x] == '.') neighbours.add(new Cell(x, y - 1));
+        if (y < gameboardLength - 1 && gameboard[y + 1][x] == '.') neighbours.add(new Cell(x, y + 1));
+        return neighbours;
+    }
+
 }

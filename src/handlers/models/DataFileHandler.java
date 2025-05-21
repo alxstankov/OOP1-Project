@@ -50,6 +50,25 @@ public class DataFileHandler implements FileHandler {
         return game;
     }
 
+    @Override
+    public void newFile(File file) {
+        try
+        {
+            if (!file.createNewFile())
+            {
+                System.out.println("The file already exists!");
+
+            }
+
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+        this.file = file;
+        System.out.println("Successfully opened "+file.getName());
+    }
+
     /**
      * This method is an implementation of the {@link FileHandler#closeFile()} method.
      * Closes the currently loaded file.

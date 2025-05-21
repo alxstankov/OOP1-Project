@@ -12,8 +12,14 @@ public interface FileHandler {
     /**
      * Loads the file contents and returns the loaded game instance
      * @param file The file that is going to be read from.
+     * @return Loaded game instance
      */
     GameProcessor readFile(File file);
+    /**
+     * Creates a new file, that is loaded in the program
+     * @param file The file, that is going to be created.
+     */
+    void newFile(File file);
     /**
      * Closes the currently loaded file.
      */

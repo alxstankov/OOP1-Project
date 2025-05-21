@@ -247,6 +247,10 @@ public class GameProcessor implements Serializable {
                 {
                     generateNextLevel();
                 }
+                else
+                {
+                    break;
+                }
             }
         }
 
