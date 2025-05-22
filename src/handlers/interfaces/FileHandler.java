@@ -18,8 +18,9 @@ public interface FileHandler {
     /**
      * Creates a new file, that is loaded in the program
      * @param file The file, that is going to be created.
+     * @return Boolean, if the file already exists.
      */
-    void newFile(File file);
+    boolean newFile(File file);
     /**
      * Closes the currently loaded file.
      */

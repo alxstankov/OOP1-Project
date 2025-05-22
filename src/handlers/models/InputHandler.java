@@ -44,7 +44,7 @@ public class InputHandler {
         put("open", (fileLocation) -> open(fileLocation));
         put("save-as", (fileLocation) -> saveAs(fileLocation));
         put("new-game",(gamemode)->newGame(gamemode));
-        put("new-file",(fileLocation)->fileHandler.newFile(new File(fileLocation)));
+        put("new-file",(fileLocation)->newFile(fileLocation));
 
     }};
     /**
@@ -236,6 +236,20 @@ public class InputHandler {
         if (game != null)
         {
             this.game.setHandler(this);
+        }
+    }
+
+    /**
+     * Calls the fileHandler's {@link handlers.interfaces.FileHandler#newFile(File)} method for creating and loading a new file.
+     * If the file handler finds, that the files exist, will show an appropriate message on the system's default output stream.
+     * @param fileLocation File location of the file, that will be created
+     */
+    private void newFile(String fileLocation)
+    {
+        boolean fileExists = fileHandler.newFile(new File(fileLocation));
+        if (fileExists)
+        {
+            this.game = null;
         }
     }
     /**

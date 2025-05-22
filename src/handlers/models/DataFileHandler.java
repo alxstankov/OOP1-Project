@@ -51,13 +51,21 @@ public class DataFileHandler implements FileHandler {
     }
 
     @Override
-    public void newFile(File file) {
+    public boolean newFile(File file) {
+        boolean fileExists;
         try
         {
-            if (!file.createNewFile())
+            fileExists = file.createNewFile();
+
+            if (!fileExists)
             {
                 System.out.println("The file already exists!");
 
+            }
+            else
+            {
+                this.file = file;
+                System.out.println("Successfully opened "+file.getName());
             }
 
         }
@@ -65,8 +73,8 @@ public class DataFileHandler implements FileHandler {
         {
             throw new RuntimeException(e);
         }
-        this.file = file;
-        System.out.println("Successfully opened "+file.getName());
+
+        return fileExists;
     }
 
     /**
