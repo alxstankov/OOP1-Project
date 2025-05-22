@@ -1,10 +1,10 @@
-package gameboard.models;
+package gameboard;
 
 import events.interfaces.Event;
 import events.models.BattleEvent;
 import events.models.PlayerLevelUpEvent;
 import events.models.TreasureEvent;
-import game.models.Level;
+import game.Level;
 import treasures.models.Treasure;
 import treasures.models.TreasureListGenerator;
 

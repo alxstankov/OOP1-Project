@@ -1,7 +1,7 @@
-package players.models;
+package players;
 
 /**
- * The {@code Warrior} is a child of {@link players.models.Player} model. Extends to set stats for the Person type.
+ * The {@code Warrior} is a child of {@link Player} model. Extends to set stats for the Person type.
  */
 public class Warrior extends Player {
     /**

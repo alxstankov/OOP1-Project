@@ -1,14 +1,14 @@
-package game.models;
+package game;
 
 import events.interfaces.Event;
 import events.models.PlayerLevelUpEvent;
-import gameboard.models.Cell;
-import gameboard.models.Gameboard;
+import gameboard.Cell;
+import gameboard.Gameboard;
 import handlers.models.InputHandler;
-import players.models.Player;
-import players.models.Person;
-import players.models.Warrior;
-import players.models.Wizard;
+import players.Player;
+import players.Person;
+import players.Warrior;
+import players.Wizard;
 
 import java.io.Serial;
 import java.io.Serializable;

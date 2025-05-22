@@ -1,7 +1,7 @@
 package handlers.models;
 
-import game.models.GameProcessor;
-import game.models.RandomLevelGenerator;
+import game.GameProcessor;
+import game.RandomLevelGenerator;
 import handlers.interfaces.FileHandler;
 
 import java.io.BufferedReader;
@@ -240,8 +240,8 @@ public class InputHandler {
     }
     /**
      * Creates a new game instance.
-     * Depending on the mode, the method will create a normal or custom instance of the game.
-     * The custom instance is only accessible when in administrative mode.
+     * Depending on the mode, the method will create a normal or random instance of the game.
+     * The random instance is only accessible when in administrative mode.
      * If a file is not opened, the method shows an appropriate message on the system's default output stream.
      *
      * @param mode The game type, that decides what instance of the game needs to be created
@@ -252,7 +252,7 @@ public class InputHandler {
         {
             if (administrativeMode)
             {
-                if (mode.equals("custom"))
+                if (mode.equals("random"))
                 {
                     if (game !=null)
                     {
@@ -284,7 +284,7 @@ public class InputHandler {
             }
             else
             {
-                if (mode.equals("custom"))
+                if (mode.equals("random"))
                 {
                     System.out.println("Administrative mode is not set!");
                     return;
@@ -356,7 +356,7 @@ public class InputHandler {
      */
     private void help()
     {
-        String administrativeGameMode = administrativeMode ? "/ custom " : "";
+        String administrativeGameMode = administrativeMode ? "/ random " : "";
         String helpText = "The following commands are supported:\n" +
                 "- open <file> - Opens <file>\n" +
                 "- new-file <file> - Creates new <file>\n" +

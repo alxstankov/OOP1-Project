@@ -1,4 +1,4 @@
-package players.models;
+package players;
 
 import handlers.models.RoundingCalculator;
 import treasures.enums.TreasureType;

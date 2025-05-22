@@ -1,6 +1,6 @@
 package handlers.models;
 
-import game.models.GameProcessor;
+import game.GameProcessor;
 import handlers.interfaces.FileHandler;
 
 import java.io.*;

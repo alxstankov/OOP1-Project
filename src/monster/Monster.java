@@ -1,4 +1,4 @@
-package monster.models;
+package monster;
 
 import handlers.models.RoundingCalculator;
 

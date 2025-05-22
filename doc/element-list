@@ -1,11 +1,11 @@
 unnamed package
 events.interfaces
 events.models
-game.models
-gameboard.models
+game
+gameboard
 handlers.interfaces
 handlers.models
-monster.models
-players.models
+monster
+players
 treasures.enums
 treasures.models

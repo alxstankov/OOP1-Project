@@ -2,7 +2,7 @@ package events.models;
 
 import events.interfaces.Event;
 import handlers.models.InputHandler;
-import players.models.Player;
+import players.Player;
 
 import java.io.Serializable;
 import java.util.HashMap;

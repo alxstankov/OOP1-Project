@@ -2,8 +2,8 @@ package events.models;
 
 import events.interfaces.Event;
 import handlers.models.InputHandler;
-import monster.models.Monster;
-import players.models.Player;
+import monster.Monster;
+import players.Player;
 
 import java.io.IOException;
 import java.io.Serializable;

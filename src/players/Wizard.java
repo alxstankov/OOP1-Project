@@ -1,7 +1,7 @@
-package players.models;
+package players;
 
 /**
- * The {@code Wizard} is a child of {@link players.models.Player} model. Extends to set stats for the Person type.
+ * The {@code Wizard} is a child of {@link Player} model. Extends to set stats for the Person type.
  */
 public class Wizard extends Player {
     /**

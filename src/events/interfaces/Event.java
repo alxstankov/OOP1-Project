@@ -1,7 +1,7 @@
 package events.interfaces;
 
 import handlers.models.InputHandler;
-import players.models.Player;
+import players.Player;
 
 import java.io.Serializable;
 

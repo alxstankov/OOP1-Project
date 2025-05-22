@@ -1,4 +1,4 @@
-package gameboard.models;
+package gameboard;
 
 import java.util.*;
 /**
