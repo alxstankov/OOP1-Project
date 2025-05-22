@@ -14,6 +14,5 @@ public class Application {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-//        Add administrative functions for custom levels
     }
 }

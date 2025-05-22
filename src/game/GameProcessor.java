@@ -48,6 +48,10 @@ public class GameProcessor implements Serializable {
      */
     private transient InputHandler handler;
     /**
+     * The number of levels that should be played
+     */
+    private int numberOfLevels = 5;
+    /**
      * Serial version unique ID for comparing {@code GameProcessor} versions.
      */
     @Serial
@@ -160,7 +164,7 @@ public class GameProcessor implements Serializable {
                 event = gameCommand.get();
 
                 if (event != null) {
-                    if ((isCustom || level.getLevel()==5) && event instanceof PlayerLevelUpEvent)
+                    if ((isCustom || level.getLevel()==numberOfLevels) && event instanceof PlayerLevelUpEvent)
                     {
                         continue;
                     }
@@ -234,7 +238,7 @@ public class GameProcessor implements Serializable {
         }
         else
         {
-            while (level.getLevel()<=5 && handler.isGameActive())
+            while (level.getLevel()<=numberOfLevels && handler.isGameActive())
             {
                 System.out.println(level.toString());
                 playLevel();
@@ -243,7 +247,7 @@ public class GameProcessor implements Serializable {
                     System.out.println("Player died. Game over");
                     return;
                 }
-                if (level.getLevel()<5)
+                if (level.getLevel()<numberOfLevels)
                 {
                     generateNextLevel();
                 }
